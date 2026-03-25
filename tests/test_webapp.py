@@ -77,6 +77,83 @@ class WebAppTestCase(unittest.TestCase):
             arquivos = list(storage_dir.glob("**/*.xlsx"))
             self.assertTrue(arquivos)
 
+    def test_deve_processar_upload_com_regulamento_json_customizado(self) -> None:
+        with tempfile.TemporaryDirectory() as diretorio_temporario:
+            base = Path(diretorio_temporario)
+            config_dir = base / "config"
+            storage_dir = base / "storage"
+            config_dir.mkdir(parents=True, exist_ok=True)
+            storage_dir.mkdir(parents=True, exist_ok=True)
+
+            regulamento_padrao = {
+                "nome_programa": "Padrao",
+                "versao": "1.0",
+                "elegibilidade": [],
+                "pontuacao": {"nota_minima_classificacao": 0, "criterios": []},
+                "desempate": [],
+            }
+            (config_dir / "padrao.json").write_text(
+                json.dumps(regulamento_padrao),
+                encoding="utf-8",
+            )
+
+            regulamento_customizado = {
+                "nome_programa": "Acao Customizada",
+                "versao": "1.0",
+                "elegibilidade": [
+                    {
+                        "id": "aceite_regulamento",
+                        "tipo": "equals",
+                        "campo": "aceite_regulamento",
+                        "valor_esperado": True,
+                    }
+                ],
+                "pontuacao": {
+                    "nota_minima_classificacao": 1,
+                    "criterios": [
+                        {
+                            "id": "website",
+                            "tipo": "presence_score",
+                            "campo": "website",
+                            "pontuacao": 1,
+                        }
+                    ],
+                },
+                "desempate": [],
+            }
+
+            app = create_app()
+            app.config["TESTING"] = True
+            app.config["CONFIG_DIR"] = str(config_dir)
+            app.config["STORAGE_DIR"] = str(storage_dir)
+            app.config["JOB_STORAGE_BACKEND"] = "local"
+            client = app.test_client()
+
+            resposta = client.post(
+                "/processar",
+                data={
+                    "planilha": (
+                        io.BytesIO(
+                            (
+                                "inscricao_id,empresa_nome,aceite_regulamento,website\n"
+                                "1,Empresa A,Sim,https://empresa-a.com\n"
+                            ).encode("utf-8")
+                        ),
+                        "inscricoes.csv",
+                    ),
+                    "regulamento_customizado": (
+                        io.BytesIO(json.dumps(regulamento_customizado).encode("utf-8")),
+                        "acao_customizada.json",
+                    ),
+                },
+                content_type="multipart/form-data",
+            )
+
+            self.assertEqual(resposta.status_code, 200)
+            conteudo = resposta.get_data(as_text=True)
+            self.assertIn("acao_customizada.json", conteudo)
+            self.assertIn("Baixar Excel", conteudo)
+
     def test_deve_processar_planilha_com_aba_diferente_no_upload_web(self) -> None:
         with tempfile.TemporaryDirectory() as diretorio_temporario:
             base = Path(diretorio_temporario)
@@ -160,7 +237,7 @@ class WebAppTestCase(unittest.TestCase):
             self.assertEqual(resposta.status_code, 200)
             conteudo = resposta.get_data(as_text=True)
             self.assertIn("Jornada Exportadora Autopartes - Argentina e Peru 2026", conteudo)
-            self.assertNotIn("regulamento_customizado", conteudo)
+            self.assertIn("regulamento_customizado", conteudo)
             self.assertNotIn("regulamento_documento", conteudo)
 
 

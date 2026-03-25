@@ -59,6 +59,7 @@ def create_app() -> Flask:
     @app.post("/processar")
     def processar():
         planilha = request.files.get("planilha")
+        regulamento_upload = request.files.get("regulamento_customizado")
         aba = request.form.get("aba", "").strip() or None
         nome_acao = request.form.get("nome_acao", "").strip()
 
@@ -83,15 +84,25 @@ def create_app() -> Flask:
             planilha_path = job_dir / _nome_seguro(planilha.filename, fallback="inscricoes.xlsx")
             planilha.save(planilha_path)
 
-            regulamento_base_path = _resolver_regulamento_preset(
-                app.config["CONFIG_DIR"],
-                regulamento_aplicado["arquivo"],
-            )
+            if regulamento_upload is not None and regulamento_upload.filename:
+                regulamento_base_path = _salvar_regulamento_upload(
+                    regulamento_upload,
+                    job_dir=job_dir,
+                )
+                regulamento_label = regulamento_upload.filename
+                origem_regulamento = "json"
+            else:
+                regulamento_base_path = _resolver_regulamento_preset(
+                    app.config["CONFIG_DIR"],
+                    regulamento_aplicado["arquivo"],
+                )
+                regulamento_label = regulamento_aplicado["nome_programa"]
+                origem_regulamento = "preset"
+
             regulamento_path = _preparar_regulamento_execucao_web(
                 regulamento_base_path,
                 job_dir=job_dir,
             )
-            regulamento_label = regulamento_aplicado["nome_programa"]
             modo = "ranqueamento"
 
             nome_saida = _nome_saida(
@@ -118,7 +129,7 @@ def create_app() -> Flask:
             job_id=job_id,
             resumo=resumo,
             regulamento_label=regulamento_label,
-            origem_regulamento="preset",
+            origem_regulamento=origem_regulamento,
             aba=aba,
             modo=modo,
             apex_site_url=APEXBRASIL_SITE_URL,
@@ -173,6 +184,15 @@ def _resolver_regulamento_preset(config_dir: str | Path, filename: str) -> Path:
     caminho = Path(config_dir) / nome
     if not caminho.exists():
         raise FileNotFoundError("Regulamento selecionado nao foi encontrado no diretorio de configuracoes.")
+    return caminho
+
+
+def _salvar_regulamento_upload(regulamento_upload, *, job_dir: str | Path) -> Path:
+    nome_arquivo = _nome_seguro(regulamento_upload.filename, fallback="regulamento.json")
+    caminho = Path(job_dir) / nome_arquivo
+    if caminho.suffix.lower() != ".json":
+        raise ValueError("Formato de regulamento nao suportado na web. Envie um arquivo JSON.")
+    regulamento_upload.save(caminho)
     return caminho
 
 
@@ -247,6 +267,8 @@ def _mensagem_falha_processamento(exc: Exception, *, aba: str | None) -> str:
             "Falha ao processar o ranqueamento: o nome de aba configurado no regulamento nao existe "
             "neste arquivo. O sistema tentou usar a aba ativa, mas houve outro problema no carregamento."
         )
+    if "formato de regulamento nao suportado na web" in mensagem_normalizada:
+        return "Falha ao processar o ranqueamento: envie o regulamento em JSON."
     return f"Falha ao processar o ranqueamento: {mensagem}"
 
 

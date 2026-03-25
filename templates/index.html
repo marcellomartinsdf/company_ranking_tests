@@ -471,7 +471,7 @@
           <div class="hero-highlights">
             <div class="highlight">
               <strong>Entrada única</strong>
-              <span>A equipe envia apenas a planilha do Dynamics. O regulamento padrão do sistema é aplicado automaticamente.</span>
+              <span>A equipe pode enviar só a planilha do Dynamics ou, quando necessário, anexar um regulamento JSON com regras específicas da ação.</span>
             </div>
             <div class="highlight">
               <strong>Análise automática</strong>
@@ -497,7 +497,7 @@
 
           <h2 class="section-title">Novo processamento</h2>
           <p class="section-lead">
-            O fluxo foi simplificado para a operação do dia a dia: basta subir a planilha exportada do Dynamics e gerar o ranking final.
+            O fluxo segue simples para o dia a dia: suba a planilha exportada do Dynamics e, se precisar, envie também um regulamento JSON para sobrescrever as regras padrão.
           </p>
 
           <form method="post" action="{{ url_for('processar') }}" enctype="multipart/form-data" class="field-grid" id="process-form">
@@ -529,6 +529,17 @@
               </label>
             </div>
 
+            <div class="field-group">
+              <h3>3. Regulamento da ação</h3>
+              <p>Opcional. Se nada for enviado, o sistema usa o regulamento padrão já configurado.</p>
+
+              <label>
+                Regulamento JSON com regras
+                <span class="hint">Use esta opção quando a ação tiver critérios diferentes e a equipe já tiver o regulamento estruturado em JSON.</span>
+                <input type="file" name="regulamento_customizado" accept=".json">
+              </label>
+            </div>
+
             <div class="actions">
               <button type="submit" id="submit-button">Processar</button>
               <a href="{{ url_for('index') }}"><button type="button" class="outline">Limpar formulário</button></a>
@@ -548,7 +559,7 @@
               <strong>Fluxo operacional completo</strong>
               <ul>
                 <li>Upload da planilha de inscrições.</li>
-                <li>Aplicação automática do regulamento padrão da ação.</li>
+                <li>Aplicação automática do regulamento padrão ou de um JSON enviado pela equipe.</li>
                 <li>Geração direta do ranking final.</li>
               </ul>
             </section>
@@ -580,6 +591,7 @@
               {% if regulamento_aplicado %}
                 O processamento web usa automaticamente o regulamento padrão configurado no sistema:
                 <strong>{{ regulamento_aplicado.nome_programa }}</strong>{% if regulamento_aplicado.versao %} - v{{ regulamento_aplicado.versao }}{% endif %}.
+                Se a equipe anexar um arquivo JSON no formulário, ele passa a valer apenas para aquele processamento.
               {% else %}
                 Nenhum regulamento padrão foi encontrado. Adicione um arquivo JSON em `config/` para habilitar o processamento.
               {% endif %}
