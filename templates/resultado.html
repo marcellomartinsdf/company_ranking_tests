@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if modo == "analise_regulamento" %}Resultado da Analise{% else %}Resultado do Ranqueamento{% endif %}</title>
+    <style>
+      :root {
+        --blue: #2046f2;
+        --blue-deep: #132b8f;
+        --green: #2fd126;
+        --yellow: #ffcf24;
+        --bg: #f4f7ff;
+        --panel: rgba(255, 255, 255, 0.97);
+        --line: rgba(20, 42, 120, 0.12);
+        --ink: #0f1b45;
+        --muted: #546184;
+        --shadow: 0 28px 64px rgba(28, 57, 167, 0.12);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(47, 209, 38, 0.15), transparent 24%),
+          radial-gradient(circle at 84% 12%, rgba(255, 207, 36, 0.2), transparent 18%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 42%, #f8faff 100%);
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 20px 20px 48px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 0 22px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        height: 42px;
+        width: auto;
+        display: block;
+      }
+
+      .brand-copy {
+        display: grid;
+        gap: 2px;
+      }
+
+      .brand-copy strong {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+
+      .brand-copy span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .topnav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .topnav a {
+        text-decoration: none;
+        color: var(--muted);
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 999px;
+      }
+
+      .topnav a.cta {
+        color: var(--blue);
+        background: rgba(32, 70, 242, 0.08);
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 36px;
+        background:
+          linear-gradient(135deg, rgba(12, 33, 129, 0.98) 0%, rgba(32, 70, 242, 0.96) 48%, rgba(49, 95, 255, 0.9) 100%);
+        color: white;
+        padding: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero::before,
+      .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+      }
+
+      .hero::before {
+        width: 240px;
+        height: 240px;
+        right: -70px;
+        top: -90px;
+        background: radial-gradient(circle, rgba(255, 207, 36, 0.94) 0%, rgba(255, 207, 36, 0) 70%);
+      }
+
+      .hero::after {
+        width: 250px;
+        height: 250px;
+        left: -120px;
+        bottom: -120px;
+        background: radial-gradient(circle, rgba(47, 209, 38, 0.76) 0%, rgba(47, 209, 38, 0) 72%);
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .eyebrow {
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 16px 0 10px;
+        font-size: clamp(36px, 5vw, 58px);
+        line-height: 0.96;
+        letter-spacing: -0.03em;
+      }
+
+      .subtitle {
+        margin: 0;
+        max-width: 62ch;
+        color: rgba(255, 255, 255, 0.84);
+        line-height: 1.65;
+        font-size: 17px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 24px 0;
+      }
+
+      .stat {
+        padding: 20px;
+        border-radius: 24px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+
+      .stat strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 34px;
+        color: var(--blue);
+        line-height: 1;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
+
+      .meta,
+      .status-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .meta td,
+      .status-table td,
+      .status-table th {
+        padding: 13px 10px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+
+      .status-table th {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .meta td:first-child {
+        width: 220px;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(47, 209, 38, 0.14);
+        color: #187912;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .note {
+        margin-top: 18px;
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255, 207, 36, 0.16) 0%, rgba(47, 209, 38, 0.13) 100%);
+        border: 1px solid rgba(20, 42, 120, 0.08);
+      }
+
+      .note strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .note p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 24px;
+      }
+
+      a.button {
+        display: inline-block;
+        text-decoration: none;
+        padding: 15px 20px;
+        border-radius: 999px;
+        font-weight: 800;
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--blue) 0%, #436aff 100%);
+        color: white;
+        box-shadow: 0 16px 34px rgba(32, 70, 242, 0.22);
+      }
+
+      .secondary {
+        border: 1px solid rgba(32, 70, 242, 0.22);
+        color: var(--blue);
+      }
+
+      .stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .mini-card {
+        padding: 20px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
+        border: 1px solid rgba(20, 42, 120, 0.08);
+      }
+
+      .mini-card strong {
+        display: block;
+        margin-bottom: 10px;
+      }
+
+      .mini-card p,
+      .mini-card li {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .mini-card ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      @media (max-width: 980px) {
+        .stats,
+        .content {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          padding: 16px 16px 40px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero,
+        .card {
+          padding: 22px;
+        }
+
+        h1 {
+          font-size: 38px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <a class="brand" href="{{ apex_site_url }}" target="_blank" rel="noreferrer">
+          <img src="{{ apex_logo_url }}" alt="ApexBrasil">
+          <span class="brand-copy">
+            <strong>Painel Operacional</strong>
+            <span>Jornadas, ações e ranqueamento de inscrições</span>
+          </span>
+        </a>
+
+        <nav class="topnav" aria-label="Atalhos institucionais">
+          <a href="{{ apex_site_url }}" target="_blank" rel="noreferrer">Portal ApexBrasil</a>
+          <a href="{{ apex_site_url }}solucoes" target="_blank" rel="noreferrer">Soluções</a>
+          <a href="{{ apex_site_url }}eventos" target="_blank" rel="noreferrer">Eventos</a>
+          <a class="cta" href="{{ url_for('index') }}">Novo processamento</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">{% if modo == "analise_regulamento" %}Análise de Regulamento{% else %}Ranqueamento Concluído{% endif %}</div>
+          {% if modo == "analise_regulamento" %}
+            <h1>Análise concluída</h1>
+            <p class="subtitle">
+              O regulamento enviado foi lido, a planilha foi inspecionada e o sistema gerou uma sugestão inicial de configuração para acelerar a montagem da nova ação.
+            </p>
+          {% else %}
+            <h1>Ranking concluído</h1>
+            <p class="subtitle">
+              O processamento terminou com a identidade operacional da ApexBrasil: regras aplicadas, critérios registrados e arquivo final pronto para download pela equipe.
+            </p>
+          {% endif %}
+        </div>
+      </section>
+
+      {% if modo == "analise_regulamento" %}
+        <div class="stats">
+          <div class="stat">
+            <strong>{{ resumo.total_colunas_identificadas }}</strong>
+            colunas identificadas na planilha
+          </div>
+          <div class="stat">
+            <strong>{{ resumo.total_mapeamentos_sugeridos }}</strong>
+            mapeamentos sugeridos
+          </div>
+          <div class="stat">
+            <strong>{{ resumo.total_criterios_detectados }}</strong>
+            critérios detectados no regulamento
+          </div>
+        </div>
+      {% else %}
+        <div class="stats">
+          <div class="stat">
+            <strong>{{ resumo.total_inscricoes }}</strong>
+            inscrições processadas
+          </div>
+          <div class="stat">
+            <strong>{{ resumo.total_classificadas }}</strong>
+            classificadas ou pendentes de demanda
+          </div>
+          <div class="stat">
+            <strong>{{ resumo.total_revisoes }}</strong>
+            com revisão humana pendente
+          </div>
+        </div>
+      {% endif %}
+
+      <section class="content">
+        <div class="card">
+          <table class="meta">
+            <tr>
+              <td><strong>Regulamento</strong></td>
+              <td>{{ regulamento_label }}</td>
+            </tr>
+            {% if modo != "analise_regulamento" and origem_regulamento %}
+              <tr>
+                <td><strong>Origem das regras</strong></td>
+                <td>
+                  {% if origem_regulamento == "preset" %}
+                    Regulamento pronto do sistema
+                  {% elif origem_regulamento == "json" %}
+                    JSON personalizado enviado pela equipe
+                  {% elif origem_regulamento == "compilado" %}
+                    Edital documental convertido automaticamente em regras executáveis
+                  {% else %}
+                    {{ origem_regulamento }}
+                  {% endif %}
+                </td>
+              </tr>
+            {% endif %}
+            <tr>
+              <td><strong>Aba utilizada</strong></td>
+              <td>
+                {% if modo == "analise_regulamento" %}
+                  {{ resumo.sheet_utilizada }}
+                {% else %}
+                  {{ aba or "Definida pelo regulamento" }}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Arquivo gerado</strong></td>
+              <td>{{ resumo.saida_path }}</td>
+            </tr>
+          </table>
+
+          {% if modo != "analise_regulamento" %}
+            <h2 style="margin-top: 28px; margin-bottom: 12px;">Resumo por status</h2>
+            <table class="status-table">
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for status, quantidade in resumo.contagem_status.items()|sort %}
+                  <tr>
+                    <td>{{ status }}</td>
+                    <td>{{ quantidade }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+
+          <div class="actions">
+            <a class="button primary" href="{{ url_for('download', job_id=job_id) }}">
+              {% if modo == "analise_regulamento" %}Baixar análise{% else %}Baixar Excel{% endif %}
+            </a>
+            <a class="button secondary" href="{{ url_for('index') }}">Novo processamento</a>
+          </div>
+        </div>
+
+        <aside class="stack">
+          <section class="card">
+            <span class="pill">Entrega pronta</span>
+            <h2 style="margin: 14px 0 10px;">{% if modo == "analise_regulamento" %}O que foi gerado{% else %}Próximo passo da equipe{% endif %}</h2>
+            {% if modo == "analise_regulamento" %}
+              <div class="mini-card">
+                <strong>Excel de análise</strong>
+                <ul>
+                  <li>Texto extraído do regulamento.</li>
+                  <li>Critérios detectados automaticamente.</li>
+                  <li>Mapeamento sugerido das colunas da planilha.</li>
+                  <li>Configuração JSON inicial para refinamento.</li>
+                </ul>
+              </div>
+            {% else %}
+              <div class="mini-card">
+                <strong>Validação operacional</strong>
+                <ul>
+                  <li>Revisar pendências humanas destacadas no Excel.</li>
+                  <li>Conferir casos com verificação documental parcial.</li>
+                  <li>Usar o ranking final como base da seleção da ação.</li>
+                </ul>
+              </div>
+            {% endif %}
+          </section>
+
+          <section class="card">
+            <div class="note">
+              <strong>Alinhado à identidade ApexBrasil</strong>
+              <p>
+                A interface foi redesenhada com base na linguagem visual atual do portal institucional:
+                azul predominante, acentos verde e amarelo, cabeçalho leve e blocos claros para navegação operacional.
+              </p>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>

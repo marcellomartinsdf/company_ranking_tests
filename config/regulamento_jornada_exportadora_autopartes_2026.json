@@ -1,0 +1,462 @@
+{
+  "nome_programa": "Jornada Exportadora Autopartes - Argentina e Peru 2026",
+  "versao": "3.1",
+  "vagas": 20,
+  "origem_dados": {
+    "sheet_name": "Ranqueamento",
+    "mapeamento_campos": {
+      "inscricao_id": ["Inscrição (Código)", "Inscricao (Codigo)", "CNPJ"],
+      "empresa_nome": ["Nome Fantasia", "Razão Social", "Razao Social"],
+      "data_submissao": ["Data de Inscricao", "Criado Em", "Created On"],
+      "cnpj": ["CNPJ"],
+      "razao_social": ["Razão Social", "Razao Social"],
+      "nome_completo": ["Nome Completo"],
+      "email": ["Email"],
+      "telefone_principal": ["Telefone Principal"],
+      "cargo": ["Cargo"],
+      "status_financeiro": ["Status Financeiro"],
+      "maturidade_vigente": ["Maturidade Vigente"],
+      "classificacao_maturidade_exportadora": ["Classificacao Maturidade Exportadora"],
+      "porte_cnpj": ["Porte (CNPJ)"],
+      "classificacao_porte_maturidade": ["Classificacao Porte e Maturidade"],
+      "setor_atuacao_primario": ["Setor de Atuacao Primario"],
+      "setor_classificacao": ["Setor - Classificacao"],
+      "cnae_primario": ["CNAE Primario"],
+      "perfil_publico_alvo_declarado": [
+        "Sua empresa e micro, pequena ou media empresa nao exportadora ou iniciante na exportacao produtora d (C007)"
+      ],
+      "cartao_cnpj_link": [
+        "Informe link da pasta com a cópia do cartão CNPJ da Receita Federal. (C008)",
+        "Informe link da pasta com a copia do cartao CNPJ da Receita Federal. (C008)"
+      ],
+      "cartao_cnpj_regional_link": [
+        "Informe link para download do cartão CNPJ que comprove esta condição: (C024)",
+        "Informe link para download do cartao CNPJ que comprove esta condicao: (C024)"
+      ],
+      "descritivo_empresa": [
+        "Informe uma breve descricao da empresa em Espanhol ou Ingles (faca um resumo de um paragrafo de apre (C009)"
+      ],
+      "pontuacao_descritivo_empresa_legado": ["Pontuacao descritivo da empresa"],
+      "ncm_descricao_produtos": [
+        "Informe o codigo NCM e a descricao do codigo de seu produto(s) para exportacao que sera(ao) levado(s (C010)"
+      ],
+      "pontuacao_ncm_legado": ["Pontuacao NCM"],
+      "foto_produto_logomarca_link": [
+        "Informe o link de uma pasta para download de foto do produto e logomarca da sua empresa. (Esse mater (C011)"
+      ],
+      "participa_peiex": [
+        "Sua empresa participa ou participou do Programa de Qualificacao para Exportacao (PEIEX)? (C012)"
+      ],
+      "pontuacao_peiex_legado": ["Pontuacao PEIEX"],
+      "participa_projeto_setorial_brasil_autoparts": [
+        "Sua empresa participa ou participou do Projeto Setorial com o Sindipecas (Brasil Autoparts)? (C013)",
+        "Sua empresa participa ou participou do Projeto Setorial com o Sindipeças (Brasil Autoparts)? (C013)"
+      ],
+      "pontuacao_projeto_setorial_legado": ["Pontuacao Projeto Setorial"],
+      "certificacao_internacional_link": [
+        "Informe o link para download do certificado atualizado, emitido por entidade acreditada nacional ou  (C014)"
+      ],
+      "participa_consultoria_sebrae_exportacao": [
+        "Sua empresa participa ou participou em consultoria do SEBRAE para Exportacao realizada entre o perio (C015)"
+      ],
+      "pontuacao_consultoria_sebrae_legado": ["Pontuacao Consultoria Sebrae"],
+      "website_empresa": [
+        "Informe o website da empresa ou sua conta nas redes sociais: (C016)"
+      ],
+      "pontuacao_website_legado": ["Pontuacao Website"],
+      "website_internacional_resposta": [
+        "Seu Website ou rede social foi construído(a) para o comprador estrangeiro em inglês E/OU espanhol? (C017)",
+        "Seu Website ou rede social foi construido(a) para o comprador estrangeiro em ingles E/OU espanhol? (C017)"
+      ],
+      "website_internacional_link": [
+        "Informe o link deste website ou rede social criado para vendas internacionais (imagens com conteúdo  (C018)",
+        "Informe o link deste website ou rede social criado para vendas internacionais (imagens com conteudo  (C018)"
+      ],
+      "pontuacao_website_internacional_legado": ["Pontuacao website em lingua estrangeira"],
+      "material_promocional_idioma_estrangeiro": [
+        "Sua empresa possui material promocional dos produtos em ingles ou espanhol? (C019)"
+      ],
+      "catalogo_digital_link": [
+        "Informe o link da pasta para download com o catalogo ou flyer digital com: nome da empresa, descrica (C020)"
+      ],
+      "pontuacao_catalogo_digital_legado": ["Pontuacao Catalogo Digital"],
+      "liderada_por_mulher": ["Sua empresa e liderada por mulher? (C021)"],
+      "pontuacao_lideranca_feminina_legado": ["Pontuacao lideranca feminina"],
+      "liderada_por_pessoa_negra": [
+        "Sua empresa e liderada por pessoa negra (preta ou parda)? (C022)"
+      ],
+      "pontuacao_lideranca_racial_legado": ["Pontuacao Lideranca Racial"],
+      "diversidade_regional": [
+        "Sua empresa tem sede localizada nas regioes norte, nordeste ou no DF? (C023)"
+      ],
+      "pontuacao_diversidade_regional_legado": ["Pontuacao diversidade regional"],
+      "possui_certificado_origem": [
+        "Sua empresa possui certificado de origem do(s) produto(s) que serao levados nesta acao? (C025)"
+      ],
+      "certificado_origem_link": [
+        "Informe o link para download do certificado, emitido por entidade acreditada nacional ou internacion (C026)"
+      ],
+      "pontuacao_certificado_origem_legado": ["Pontuacao certificado de origem"],
+      "possui_certificacao_internacional": [
+        "Sua empresa possui certificacao internacional exigida ou valorizada para exportacao? (C027)"
+      ],
+      "pontuacao_certificacao_internacional_legado": ["Pontuacao certificacao internacional"],
+      "pontuacao_total_legado": ["Pontuacao total"]
+    }
+  },
+  "verificacoes_automaticas": {
+    "timeout_segundos": 12,
+    "max_download_bytes": 10485760,
+    "usar_openai_quando_disponivel": true,
+    "openai": {
+      "model": "gpt-4.1-mini",
+      "timeout_segundos": 25
+    },
+    "status_financeiro": {
+      "campo": "status_financeiro",
+      "valores_sem_pendencia": ["Adimplente"],
+      "tokens_com_pendencia": ["inadimpl", "pendenc", "debito"]
+    },
+    "cnpj": {
+      "campo": "cnpj"
+    },
+    "cnpj_consulta_oficial": {
+      "habilitado": false,
+      "fonte": "arquivo_local",
+      "arquivo": "${CNPJ_PUBLIC_DATASET_PATH}",
+      "coluna_cnpj": "cnpj",
+      "coluna_razao_social": "razao_social",
+      "coluna_nome_fantasia": "nome_fantasia",
+      "coluna_situacao_cadastral": "situacao_cadastral",
+      "campo_saida": "cnpj_empresa_confere_cadastro_oficial"
+    },
+    "website_social": {
+      "campo": "website_empresa",
+      "campo_saida": "website_ou_rede_social_verificado"
+    },
+    "website_internacional": {
+      "campo_link": "website_internacional_link",
+      "campo_resposta": "website_internacional_resposta",
+      "campo_saida": "website_internacional_verificado"
+    },
+    "cartao_cnpj": {
+      "campos_link": ["cartao_cnpj_link", "cartao_cnpj_regional_link"],
+      "campo_saida": "cartao_cnpj_verificado"
+    }
+  },
+  "elegibilidade": [
+    {
+      "id": "setor_autopartes",
+      "nome": "Setor aderente ao escopo da jornada",
+      "tipo": "equals",
+      "campo": "setor_classificacao",
+      "valor_esperado": "Classificada",
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "mensagem_aprovado": "Empresa enquadrada no setor de autopartes da jornada.",
+      "mensagem_reprovado": "Empresa fora do escopo setorial da jornada."
+    },
+    {
+      "id": "perfil_publico_alvo",
+      "nome": "Perfil de porte e maturidade aderente",
+      "tipo": "equals",
+      "campo": "classificacao_porte_maturidade",
+      "valor_esperado": "Perfil aderente",
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "mensagem_aprovado": "Empresa aderente ao publico-alvo do edital.",
+      "mensagem_reprovado": "Empresa fora do publico-alvo previsto no edital."
+    },
+    {
+      "id": "pendencia_financeira_apex",
+      "nome": "Ausencia de pendencia financeira junto a ApexBrasil",
+      "tipo": "equals",
+      "campo": "possui_pendencia_financeira_apex",
+      "valor_esperado": false,
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "campo_valor_observado": "status_financeiro",
+      "campo_justificativa": "possui_pendencia_financeira_apex_justificativa",
+      "mensagem_aprovado": "Nao ha pendencia financeira registrada.",
+      "mensagem_reprovado": "Existe pendencia financeira em eventos anteriores da ApexBrasil."
+    }
+  ],
+  "verificacoes": [
+    {
+      "id": "cnpj_estrutural_valido",
+      "nome": "CNPJ com estrutura valida",
+      "tipo": "equals",
+      "campo": "cnpj_valido",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "cnpj_valor_observado",
+      "campo_justificativa": "cnpj_justificativa"
+    },
+    {
+      "id": "cnpj_empresa_confere_cadastro_oficial",
+      "nome": "CNPJ confere com a empresa em fonte oficial",
+      "tipo": "equals",
+      "campo": "cnpj_empresa_confere_cadastro_oficial",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "cnpj_fonte_oficial_resumo",
+      "campo_justificativa": "cnpj_empresa_confere_cadastro_oficial_justificativa",
+      "campo_revisao_humana": "cnpj_empresa_confere_cadastro_oficial_revisao_humana"
+    },
+    {
+      "id": "website_verificado",
+      "nome": "Website ou rede social verificado automaticamente",
+      "tipo": "equals",
+      "campo": "website_ou_rede_social_verificado",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "website_ou_rede_social_verificado_valor_observado",
+      "campo_justificativa": "website_ou_rede_social_verificado_justificativa",
+      "campo_revisao_humana": "website_ou_rede_social_verificado_revisao_humana"
+    },
+    {
+      "id": "website_internacional_verificado",
+      "nome": "Conteudo internacional com ingles e/ou espanhol",
+      "tipo": "equals",
+      "campo": "website_internacional_verificado",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "website_internacional_verificado_valor_observado",
+      "campo_justificativa": "website_internacional_verificado_justificativa",
+      "campo_revisao_humana": "website_internacional_verificado_revisao_humana"
+    },
+    {
+      "id": "cartao_cnpj_verificado",
+      "nome": "Cartao CNPJ conferido automaticamente",
+      "tipo": "equals",
+      "campo": "cartao_cnpj_verificado",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "cartao_cnpj_verificado_valor_observado",
+      "campo_justificativa": "cartao_cnpj_verificado_justificativa",
+      "campo_revisao_humana": "cartao_cnpj_verificado_revisao_humana"
+    }
+  ],
+  "pontuacao": {
+    "nota_minima_classificacao": 5,
+    "criterios": [
+      {
+        "id": "descritivo_empresa_catalogo",
+        "nome": "Descritivo da empresa para catalogo",
+        "tipo": "presence_score",
+        "campo": "descritivo_empresa",
+        "campo_score_override": "pontuacao_descritivo_empresa_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "min_length": 80,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Validar se o texto esta em ingles ou espanhol e se descreve diferencial competitivo e publico-alvo."
+      },
+      {
+        "id": "ncm_produto_exportacao",
+        "nome": "Indicacao de NCM e descricao do produto",
+        "tipo": "ncm_score",
+        "campo": "ncm_descricao_produtos",
+        "campo_score_override": "pontuacao_ncm_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1
+      },
+      {
+        "id": "atendimento_peiex",
+        "nome": "Atendimento pelo PEIEX",
+        "tipo": "binary_score",
+        "campo": "participa_peiex",
+        "campo_score_override": "pontuacao_peiex_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Confirmar atendimento PEIEX nos sistemas internos da ApexBrasil."
+      },
+      {
+        "id": "atendimento_projeto_setorial",
+        "nome": "Atendimento no Projeto Setorial Brasil Autoparts",
+        "tipo": "binary_score",
+        "campo": "participa_projeto_setorial_brasil_autoparts",
+        "campo_score_override": "pontuacao_projeto_setorial_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Confirmar atendimento do projeto setorial nos controles internos."
+      },
+      {
+        "id": "atendimento_consultoria_sebrae",
+        "nome": "Atendimento em consultoria do Sebrae",
+        "tipo": "binary_score",
+        "campo": "participa_consultoria_sebrae_exportacao",
+        "campo_score_override": "pontuacao_consultoria_sebrae_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Confirmar atendimento Sebrae com base nos sistemas compartilhados."
+      },
+      {
+        "id": "website_ou_rede_social",
+        "nome": "Website ou rede social",
+        "tipo": "binary_score",
+        "campo": "website_ou_rede_social_verificado",
+        "politica_campo_ausente": "review",
+        "campo_valor_observado": "website_ou_rede_social_verificado_valor_observado",
+        "campo_justificativa": "website_ou_rede_social_verificado_justificativa",
+        "campo_revisao_humana": "website_ou_rede_social_verificado_revisao_humana",
+        "campo_score_override": "pontuacao_website_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "contabilizar_sugestao_na_nota": true
+      },
+      {
+        "id": "website_lingua_estrangeira",
+        "nome": "Website ou rede social para comprador estrangeiro",
+        "tipo": "binary_score",
+        "campo": "website_internacional_verificado",
+        "politica_campo_ausente": "review",
+        "campo_valor_observado": "website_internacional_verificado_valor_observado",
+        "campo_justificativa": "website_internacional_verificado_justificativa",
+        "campo_revisao_humana": "website_internacional_verificado_revisao_humana",
+        "campo_score_override": "pontuacao_website_internacional_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "contabilizar_sugestao_na_nota": true
+      },
+      {
+        "id": "catalogo_digital_idioma_estrangeiro",
+        "nome": "Material promocional em ingles ou espanhol",
+        "tipo": "binary_score",
+        "campo": "material_promocional_idioma_estrangeiro",
+        "campos_evidencia": ["catalogo_digital_link"],
+        "campo_score_override": "pontuacao_catalogo_digital_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Validar se o material promocional e profissional e atende ao idioma exigido."
+      },
+      {
+        "id": "certificado_origem",
+        "nome": "Certificado de origem do produto",
+        "tipo": "binary_score",
+        "campo": "possui_certificado_origem",
+        "campos_evidencia": ["certificado_origem_link"],
+        "campo_score_override": "pontuacao_certificado_origem_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Confirmar se o certificado e valido e emitido por entidade acreditada."
+      },
+      {
+        "id": "certificacao_internacional",
+        "nome": "Certificacao internacional exigida ou valorizada para exportacao",
+        "tipo": "binary_score",
+        "campo": "possui_certificacao_internacional",
+        "campos_evidencia": ["certificacao_internacional_link"],
+        "campo_score_override": "pontuacao_certificacao_internacional_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Confirmar validade, entidade emissora e aderencia da certificacao ao objeto do edital."
+      },
+      {
+        "id": "lideranca_feminina",
+        "nome": "Empresa liderada por mulher",
+        "tipo": "binary_score",
+        "campo": "liderada_por_mulher",
+        "campo_score_override": "pontuacao_lideranca_feminina_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1
+      },
+      {
+        "id": "lideranca_racial",
+        "nome": "Empresa liderada por pessoa negra",
+        "tipo": "binary_score",
+        "campo": "liderada_por_pessoa_negra",
+        "campo_score_override": "pontuacao_lideranca_racial_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1
+      },
+      {
+        "id": "diversidade_regional",
+        "nome": "Sede nas regioes Norte, Nordeste ou DF",
+        "tipo": "binary_score",
+        "campo": "diversidade_regional",
+        "campo_score_override": "pontuacao_diversidade_regional_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1
+      }
+    ]
+  },
+  "analise_demanda": [
+    {
+      "id": "demanda_mercado_alvo",
+      "nome": "Compatibilidade com demanda dos compradores",
+      "tipo": "gte",
+      "campo": "numero_compradores_interessados",
+      "valor_minimo": 1,
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "mensagem_aprovado": "Ha pelo menos um comprador compativel com a oferta exportavel.",
+      "mensagem_reprovado": "Nao foram identificados compradores compativeis."
+    }
+  ],
+  "desempate": [
+    {
+      "tipo": "campo",
+      "campo": "numero_compradores_interessados",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "atendimento_peiex",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "atendimento_consultoria_sebrae",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "soma_criterios",
+      "criterios": [
+        "website_ou_rede_social",
+        "website_lingua_estrangeira",
+        "catalogo_digital_idioma_estrangeiro"
+      ],
+      "ordem": "desc"
+    },
+    {
+      "tipo": "soma_criterios",
+      "criterios": [
+        "certificado_origem",
+        "certificacao_internacional"
+      ],
+      "ordem": "desc"
+    },
+    {
+      "tipo": "soma_criterios",
+      "criterios": [
+        "lideranca_feminina",
+        "lideranca_racial"
+      ],
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "diversidade_regional",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "campo",
+      "campo": "data_submissao",
+      "ordem": "asc"
+    }
+  ]
+}

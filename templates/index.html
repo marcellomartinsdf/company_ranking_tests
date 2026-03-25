@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ranqueamento ApexBrasil</title>
+    <style>
+      :root {
+        --blue: #2046f2;
+        --blue-deep: #132b8f;
+        --green: #2fd126;
+        --yellow: #ffcf24;
+        --bg: #f4f7ff;
+        --panel: rgba(255, 255, 255, 0.96);
+        --line: rgba(20, 42, 120, 0.12);
+        --ink: #0f1b45;
+        --muted: #516089;
+        --shadow: 0 28px 64px rgba(28, 57, 167, 0.12);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(47, 209, 38, 0.16), transparent 24%),
+          radial-gradient(circle at 85% 10%, rgba(255, 207, 36, 0.18), transparent 20%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 42%, #f8faff 100%);
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 20px 20px 56px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 0 22px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 16px;
+        text-decoration: none;
+      }
+
+      .brand img {
+        height: 42px;
+        width: auto;
+        display: block;
+      }
+
+      .brand-copy {
+        display: grid;
+        gap: 2px;
+      }
+
+      .brand-copy strong {
+        font-size: 15px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .brand-copy span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .topnav {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .topnav a {
+        text-decoration: none;
+        color: var(--muted);
+        font-weight: 700;
+        padding: 10px 14px;
+        border-radius: 999px;
+      }
+
+      .topnav a.cta {
+        background: rgba(32, 70, 242, 0.08);
+        color: var(--blue);
+      }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        border-radius: 36px;
+        background:
+          linear-gradient(135deg, rgba(12, 33, 129, 0.98) 0%, rgba(32, 70, 242, 0.96) 48%, rgba(49, 95, 255, 0.9) 100%);
+        color: white;
+        padding: 34px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero::before,
+      .hero::after {
+        content: "";
+        position: absolute;
+        border-radius: 999px;
+        opacity: 0.9;
+      }
+
+      .hero::before {
+        width: 240px;
+        height: 240px;
+        right: -60px;
+        top: -80px;
+        background: radial-gradient(circle, rgba(255, 207, 36, 0.95) 0%, rgba(255, 207, 36, 0) 70%);
+      }
+
+      .hero::after {
+        width: 280px;
+        height: 280px;
+        left: -120px;
+        bottom: -120px;
+        background: radial-gradient(circle, rgba(47, 209, 38, 0.75) 0%, rgba(47, 209, 38, 0) 72%);
+      }
+
+      .hero-grid {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+        align-items: end;
+      }
+
+      .eyebrow {
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 16px 0 14px;
+        max-width: 12ch;
+        font-size: clamp(40px, 6vw, 68px);
+        line-height: 0.94;
+        letter-spacing: -0.03em;
+      }
+
+      .subtitle {
+        margin: 0;
+        max-width: 58ch;
+        color: rgba(255, 255, 255, 0.84);
+        font-size: 18px;
+        line-height: 1.65;
+      }
+
+      .hero-highlights {
+        display: grid;
+        gap: 14px;
+      }
+
+      .highlight {
+        padding: 18px 18px 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(10px);
+      }
+
+      .highlight strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+
+      .highlight span {
+        display: block;
+        color: rgba(255, 255, 255, 0.82);
+        line-height: 1.55;
+        font-size: 14px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.78fr);
+        gap: 22px;
+        align-items: start;
+        margin-top: 22px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+      }
+
+      .form-card {
+        padding: 30px;
+      }
+
+      .side-card {
+        padding: 26px;
+      }
+
+      .section-title {
+        margin: 0 0 18px;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+
+      .section-lead {
+        margin: -6px 0 20px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .field-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .field-group {
+        display: grid;
+        gap: 18px;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(32, 70, 242, 0.1);
+        background: linear-gradient(180deg, #ffffff 0%, #f7f9ff 100%);
+      }
+
+      .field-group h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .field-group p {
+        margin: -8px 0 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 14px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        font-weight: 700;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.55;
+        font-weight: 500;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 15px 16px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(20, 42, 120, 0.14);
+        background: white;
+        color: var(--ink);
+        font: inherit;
+        outline: none;
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+      }
+
+      input:focus,
+      select:focus {
+        border-color: rgba(32, 70, 242, 0.5);
+        box-shadow: 0 0 0 4px rgba(32, 70, 242, 0.12);
+        transform: translateY(-1px);
+      }
+
+      input[type="file"] {
+        padding: 13px;
+      }
+
+      .flash {
+        margin-bottom: 16px;
+        padding: 15px 16px;
+        border-radius: 16px;
+        background: rgba(255, 94, 58, 0.1);
+        color: #a4372d;
+        border: 1px solid rgba(255, 94, 58, 0.18);
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 15px 22px;
+        background: linear-gradient(135deg, var(--blue) 0%, #436aff 100%);
+        color: white;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 16px 34px rgba(32, 70, 242, 0.22);
+      }
+
+      .outline {
+        color: var(--blue);
+        background: transparent;
+        border: 1px solid rgba(32, 70, 242, 0.22);
+        box-shadow: none;
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 7px 11px;
+        border-radius: 999px;
+        background: rgba(47, 209, 38, 0.14);
+        color: #187912;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .list {
+        display: grid;
+        gap: 18px;
+        margin-top: 16px;
+      }
+
+      .feature {
+        padding: 18px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, #ffffff 0%, #f5f8ff 100%);
+        border: 1px solid rgba(20, 42, 120, 0.08);
+      }
+
+      .feature strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .support {
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 24px;
+        background: linear-gradient(135deg, rgba(255, 207, 36, 0.2) 0%, rgba(47, 209, 38, 0.14) 100%);
+        border: 1px solid rgba(20, 42, 120, 0.08);
+      }
+
+      .support strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .support p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .processing-note {
+        display: none;
+        margin-top: 10px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(32, 70, 242, 0.08);
+        color: var(--blue-deep);
+        font-weight: 700;
+        line-height: 1.5;
+      }
+
+      form.is-processing .processing-note {
+        display: block;
+      }
+
+      form.is-processing button[type="submit"] {
+        opacity: 0.82;
+        cursor: wait;
+      }
+
+      @media (max-width: 1040px) {
+        .hero-grid,
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .page {
+          padding: 16px 16px 40px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero,
+        .form-card,
+        .side-card {
+          padding: 22px;
+        }
+
+        h1 {
+          font-size: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="topbar">
+        <a class="brand" href="{{ apex_site_url }}" target="_blank" rel="noreferrer">
+          <img src="{{ apex_logo_url }}" alt="ApexBrasil">
+          <span class="brand-copy">
+            <strong>Painel Operacional</strong>
+            <span>Jornadas, ações e ranqueamento de inscrições</span>
+          </span>
+        </a>
+
+        <nav class="topnav" aria-label="Atalhos institucionais">
+          <a href="{{ apex_site_url }}" target="_blank" rel="noreferrer">Portal ApexBrasil</a>
+          <a href="{{ apex_site_url }}solucoes" target="_blank" rel="noreferrer">Soluções</a>
+          <a href="{{ apex_site_url }}eventos" target="_blank" rel="noreferrer">Eventos</a>
+          <a class="cta" href="{{ apex_site_url }}jornada-exportadora" target="_blank" rel="noreferrer">Jornada Exportadora</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow">Painel de Ranqueamento</div>
+            <h1>Suba a planilha do Dynamics e gere o ranking.</h1>
+            <p class="subtitle">
+              Um ambiente único para a equipe operacional subir as inscrições exportadas do Dynamics,
+              aplicar automaticamente os critérios da Jornada Exportadora e devolver um Excel final com as empresas ordenadas.
+            </p>
+          </div>
+
+          <div class="hero-highlights">
+            <div class="highlight">
+              <strong>Entrada única</strong>
+              <span>A equipe envia apenas a planilha do Dynamics. O regulamento padrão do sistema é aplicado automaticamente.</span>
+            </div>
+            <div class="highlight">
+              <strong>Análise automática</strong>
+              <span>O sistema avalia elegibilidade, pontuação, corte mínimo, verificações automáticas e desempate sem exigir parametrização manual.</span>
+            </div>
+            <div class="highlight">
+              <strong>Saída operacional</strong>
+              <span>Excel pronto para a equipe com ranking final, pontuação por critério e pendências de revisão humana.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="layout">
+        <div class="card form-card">
+          {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+              {% for categoria, mensagem in mensagens %}
+                <div class="flash">{{ mensagem }}</div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <h2 class="section-title">Novo processamento</h2>
+          <p class="section-lead">
+            O fluxo foi simplificado para a operação do dia a dia: basta subir a planilha exportada do Dynamics e gerar o ranking final.
+          </p>
+
+          <form method="post" action="{{ url_for('processar') }}" enctype="multipart/form-data" class="field-grid" id="process-form">
+            <div class="field-group">
+              <h3>1. Identificação da ação</h3>
+              <p>Esses dados ajudam a organizar o arquivo gerado e a localizar depois o processamento da equipe.</p>
+
+              <label>
+                Nome da ação
+                <span class="hint">Opcional. Se preenchido, entra no nome do Excel gerado.</span>
+                <input type="text" name="nome_acao" placeholder="Ex.: jornada_autopartes_argentina_peru_2026">
+              </label>
+
+              <label>
+                Aba da planilha
+                <span class="hint">Opcional. Deixe vazio para usar a aba definida no regulamento ou a aba ativa do arquivo.</span>
+                <input type="text" name="aba" placeholder="Ex.: Ranqueamento">
+              </label>
+            </div>
+
+            <div class="field-group">
+              <h3>2. Planilha de inscrições</h3>
+              <p>Funciona com planilhas exportadas do Dynamics, planilhas operacionais e layouts mistos usados pela equipe.</p>
+
+              <label>
+                Planilha de inscrições
+                <span class="hint">Arquivo em `.xlsx`, `.xlsm` ou `.csv`.</span>
+                <input type="file" name="planilha" accept=".xlsx,.xlsm,.csv" required>
+              </label>
+            </div>
+
+            <div class="actions">
+              <button type="submit" id="submit-button">Processar</button>
+              <a href="{{ url_for('index') }}"><button type="button" class="outline">Limpar formulário</button></a>
+            </div>
+            <div class="processing-note" id="processing-note">
+              Processando a planilha. A tela final aparece assim que a análise e o ranqueamento terminarem.
+            </div>
+          </form>
+        </div>
+
+        <aside class="card side-card">
+          <span class="pill">Identidade ApexBrasil</span>
+          <h2 class="section-title" style="margin-top: 14px;">O que esta versão já resolve</h2>
+
+          <div class="list">
+            <section class="feature">
+              <strong>Fluxo operacional completo</strong>
+              <ul>
+                <li>Upload da planilha de inscrições.</li>
+                <li>Aplicação automática do regulamento padrão da ação.</li>
+                <li>Geração direta do ranking final.</li>
+              </ul>
+            </section>
+
+            <section class="feature">
+              <strong>Saída em Excel</strong>
+              <ul>
+                <li>`inscricoes_brutas`</li>
+                <li>`avaliacao_por_criterio`</li>
+                <li>`ranking_final`</li>
+                <li>`pendencias_revisao`</li>
+                <li>`config_sugerida` no modo de análise</li>
+              </ul>
+            </section>
+
+            <section class="feature">
+              <strong>Regras e evidências</strong>
+              <ul>
+                <li>Critérios ficam separados entre elegibilidade, pontuação e desempate.</li>
+                <li>Verificações automáticas registram justificativa e revisão humana.</li>
+                <li>Aba flexível para lidar com exportações cruas do Dynamics.</li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="support">
+            <strong>Regulamento aplicado</strong>
+            <p>
+              {% if regulamento_aplicado %}
+                O processamento web usa automaticamente o regulamento padrão configurado no sistema:
+                <strong>{{ regulamento_aplicado.nome_programa }}</strong>{% if regulamento_aplicado.versao %} - v{{ regulamento_aplicado.versao }}{% endif %}.
+              {% else %}
+                Nenhum regulamento padrão foi encontrado. Adicione um arquivo JSON em `config/` para habilitar o processamento.
+              {% endif %}
+            </p>
+          </div>
+        </aside>
+      </section>
+    </main>
+    <script>
+      const processForm = document.getElementById("process-form");
+      const submitButton = document.getElementById("submit-button");
+      if (processForm && submitButton) {
+        processForm.addEventListener("submit", () => {
+          processForm.classList.add("is-processing");
+          submitButton.disabled = true;
+          submitButton.textContent = "Processando...";
+        });
+      }
+    </script>
+  </body>
+</html>

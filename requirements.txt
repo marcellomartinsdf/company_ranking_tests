@@ -1,0 +1,6 @@
+azure-identity>=1.17,<2.0
+azure-storage-blob>=12.22,<13.0
+flask>=3.1,<4.0
+gunicorn>=23.0,<24.0
+openpyxl>=3.1,<4.0
+pypdf>=6.9,<7.0

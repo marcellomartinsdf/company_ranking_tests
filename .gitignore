@@ -1,0 +1,7 @@
+.venv/
+.vendor/
+__pycache__/
+*.pyc
+*.xlsx
+._*
+storage/

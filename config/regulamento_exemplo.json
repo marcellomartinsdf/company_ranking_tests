@@ -1,0 +1,114 @@
+{
+  "nome_programa": "Jornada de Exportacao ApexBrasil - MVP",
+  "versao": "1.0",
+  "elegibilidade": [
+    {
+      "id": "aceite_regulamento",
+      "nome": "Aceite do regulamento",
+      "tipo": "equals",
+      "campo": "aceite_regulamento",
+      "valor_esperado": true,
+      "politica_campo_ausente": "fail",
+      "mensagem_aprovado": "Empresa aceitou o regulamento.",
+      "mensagem_reprovado": "Empresa nao aceitou o regulamento."
+    },
+    {
+      "id": "situacao_cadastral_ativa",
+      "nome": "Situacao cadastral elegivel",
+      "tipo": "in",
+      "campo": "situacao_cadastral",
+      "valores_aceitos": ["ativa"],
+      "politica_campo_ausente": "fail",
+      "mensagem_aprovado": "Situacao cadastral dentro do regulamento.",
+      "mensagem_reprovado": "Situacao cadastral fora do regulamento."
+    }
+  ],
+  "pontuacao": {
+    "nota_minima_classificacao": 25,
+    "criterios": [
+      {
+        "id": "experiencia_exportadora",
+        "nome": "Experiencia exportadora",
+        "tipo": "range_score",
+        "campo": "anos_experiencia_exportacao",
+        "politica_campo_ausente": "zero",
+        "pontuacao_maxima": 20,
+        "faixas": [
+          {
+            "min": 5,
+            "score": 20,
+            "justificativa": "Possui 5 ou mais anos de experiencia exportadora."
+          },
+          {
+            "min": 2,
+            "max_exclusive": 5,
+            "score": 12,
+            "justificativa": "Possui entre 2 e 5 anos de experiencia exportadora."
+          },
+          {
+            "min": 0,
+            "max_exclusive": 2,
+            "score": 5,
+            "justificativa": "Possui menos de 2 anos de experiencia exportadora."
+          }
+        ]
+      },
+      {
+        "id": "mercados_prioritarios",
+        "nome": "Atuacao em mercados prioritarios",
+        "tipo": "range_score",
+        "campo": "quantidade_mercados_prioritarios",
+        "politica_campo_ausente": "zero",
+        "pontuacao_maxima": 15,
+        "faixas": [
+          {
+            "min": 3,
+            "score": 15,
+            "justificativa": "Atua em 3 ou mais mercados prioritarios."
+          },
+          {
+            "min": 1,
+            "max_exclusive": 3,
+            "score": 8,
+            "justificativa": "Atua em 1 ou 2 mercados prioritarios."
+          },
+          {
+            "min": 0,
+            "max_exclusive": 1,
+            "score": 0,
+            "justificativa": "Nao atua em mercados prioritarios."
+          }
+        ]
+      },
+      {
+        "id": "maturidade_exportadora",
+        "nome": "Maturidade exportadora",
+        "tipo": "value_map",
+        "campo": "maturidade_exportadora",
+        "politica_campo_ausente": "review",
+        "pontuacao_maxima": 15,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Sugestao automatica gerada a partir da maturidade informada.",
+        "mapa_valores": {
+          "alta": 15,
+          "media": 10,
+          "baixa": 5
+        }
+      }
+    ]
+  },
+  "desempate": [
+    {
+      "tipo": "criterio",
+      "criterio_id": "experiencia_exportadora",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "campo",
+      "campo": "data_submissao",
+      "ordem": "asc"
+    }
+  ]
+}
+
