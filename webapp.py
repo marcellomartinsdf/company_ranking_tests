@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import tempfile
 from uuid import uuid4
 
 from flask import Flask, flash, redirect, render_template, request, send_file, url_for
@@ -25,7 +26,10 @@ def create_app() -> Flask:
     app.config["SECRET_KEY"] = os.environ.get("RANQUEAMENTO_SECRET_KEY", "ranqueamento-dev")
     app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024
     app.config["CONFIG_DIR"] = str(Path(app.root_path) / "config")
-    app.config["STORAGE_DIR"] = str(Path(app.root_path) / "storage" / "jobs")
+    app.config["STORAGE_DIR"] = os.environ.get(
+        "STORAGE_DIR",
+        str(Path(tempfile.gettempdir()) / "ranqueamento_apex" / "jobs"),
+    )
     app.config["JOB_STORAGE_BACKEND"] = os.environ.get("JOB_STORAGE_BACKEND", "local")
     app.config["AZURE_STORAGE_ACCOUNT_URL"] = os.environ.get("AZURE_STORAGE_ACCOUNT_URL")
     app.config["AZURE_STORAGE_CONNECTION_STRING"] = os.environ.get(
@@ -71,14 +75,14 @@ def create_app() -> Flask:
             )
             return redirect(url_for("index"))
 
-        job_id = uuid4().hex
-        storage = _get_job_storage(app)
-        job_dir = storage.create_job_workspace(job_id)
-
-        planilha_path = job_dir / _nome_seguro(planilha.filename, fallback="inscricoes.xlsx")
-        planilha.save(planilha_path)
-
         try:
+            job_id = uuid4().hex
+            storage = _get_job_storage(app)
+            job_dir = storage.create_job_workspace(job_id)
+
+            planilha_path = job_dir / _nome_seguro(planilha.filename, fallback="inscricoes.xlsx")
+            planilha.save(planilha_path)
+
             regulamento_base_path = _resolver_regulamento_preset(
                 app.config["CONFIG_DIR"],
                 regulamento_aplicado["arquivo"],
@@ -105,6 +109,7 @@ def create_app() -> Flask:
             )
             storage.persist_job(job_id, job_dir, nome_saida)
         except Exception as exc:
+            app.logger.exception("Falha no processamento do ranqueamento")
             flash(_mensagem_falha_processamento(exc, aba=aba), "error")
             return redirect(url_for("index"))
 
