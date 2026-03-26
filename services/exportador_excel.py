@@ -28,6 +28,7 @@ COR_BORDA = "D7DFF5"
 COLUNAS_LARGAS = {
     "justificativa",
     "motivo_status_final",
+    "resumo_classificacao",
     "valor_observado",
     "criterio_nome",
     "empresa_nome",
@@ -49,6 +50,10 @@ COLUNAS_DATA = {"data_submissao"}
 
 
 class ExportadorExcel:
+    def __init__(self, regulamento: dict[str, Any] | None = None) -> None:
+        self.regulamento = regulamento or {}
+        self.config_saida = dict(self.regulamento.get("saida_excel") or {})
+
     def exportar(
         self,
         caminho_saida: str | Path,
@@ -64,26 +69,28 @@ class ExportadorExcel:
         self._configurar_aparencia_planilha(planilha_ranking)
         self._preencher_ranking_final(planilha_ranking, ranking)
 
-        planilha_avaliacao = workbook.create_sheet("avaliacao_por_criterio")
-        self._configurar_aparencia_planilha(planilha_avaliacao)
-        self._preencher_avaliacao_por_criterio(planilha_avaliacao, ranking)
-        planilha_avaliacao.sheet_state = "hidden"
+        if not self._somente_ranking_final():
+            planilha_avaliacao = workbook.create_sheet("avaliacao_por_criterio")
+            self._configurar_aparencia_planilha(planilha_avaliacao)
+            self._preencher_avaliacao_por_criterio(planilha_avaliacao, ranking)
 
-        planilha_pendencias = workbook.create_sheet("pendencias_revisao")
-        self._configurar_aparencia_planilha(planilha_pendencias)
-        self._preencher_pendencias_revisao(planilha_pendencias, ranking)
-        planilha_pendencias.sheet_state = "hidden"
+            planilha_pendencias = workbook.create_sheet("pendencias_revisao")
+            self._configurar_aparencia_planilha(planilha_pendencias)
+            self._preencher_pendencias_revisao(planilha_pendencias, ranking)
 
-        planilha_bruta = workbook.create_sheet("inscricoes_brutas")
-        self._configurar_aparencia_planilha(planilha_bruta)
-        self._preencher_inscricoes_brutas(planilha_bruta, inscricoes)
-        planilha_bruta.sheet_state = "hidden"
+            planilha_bruta = workbook.create_sheet("inscricoes_brutas")
+            self._configurar_aparencia_planilha(planilha_bruta)
+            self._preencher_inscricoes_brutas(planilha_bruta, inscricoes)
+            planilha_bruta.sheet_state = "hidden"
 
         self._aplicar_cores_abas(workbook)
         workbook.active = 0
 
         workbook.save(path)
         workbook.close()
+
+    def _somente_ranking_final(self) -> bool:
+        return bool(self.config_saida.get("somente_ranking_final", False))
 
     def _preencher_inscricoes_brutas(self, worksheet, inscricoes: list[Inscricao]) -> None:
         colunas_fixas = ["inscricao_id", "empresa_nome", "cnpj", "data_submissao"]
@@ -132,9 +139,11 @@ class ExportadorExcel:
         ranking: list[ResultadoInscricao],
     ) -> None:
         criterios_pontuacao = self._coletar_criterios_pontuacao(ranking)
+        criterios_revisao = self._coletar_criterios_revisao(ranking)
         cabecalho = ["ordem", "empresa_nome", "razao_social", "cnpj"]
         cabecalho += [self._coluna_pontuacao_criterio(criterio_id) for criterio_id, _ in criterios_pontuacao]
-        cabecalho += ["pontuacao_total", "status_final", "motivo_status_final"]
+        cabecalho += ["pontuacao_total", "status_final", "motivo_status_final", "resumo_classificacao"]
+        cabecalho += [self._coluna_revisao_criterio(criterio_id) for criterio_id, _ in criterios_revisao]
 
         labels = {
             "ordem": "Posicao",
@@ -144,10 +153,15 @@ class ExportadorExcel:
             "pontuacao_total": "Nota total",
             "status_final": "Status",
             "motivo_status_final": "Observacao",
+            "resumo_classificacao": "Resumo da classificacao",
         }
         for criterio_id, criterio_nome in criterios_pontuacao:
             labels[self._coluna_pontuacao_criterio(criterio_id)] = (
                 f"Pontos - {self._formatar_nome_criterio(criterio_nome)}"
+            )
+        for criterio_id, criterio_nome in criterios_revisao:
+            labels[self._coluna_revisao_criterio(criterio_id)] = (
+                f"Revisao humana - {self._formatar_nome_criterio(criterio_nome)}"
             )
 
         linhas = []
@@ -159,15 +173,21 @@ class ExportadorExcel:
                 "cnpj": resultado.inscricao.cnpj,
                 "status_final": resultado.status_final,
                 "motivo_status_final": resultado.motivo_status_final,
+                "resumo_classificacao": self._montar_resumo_classificacao(resultado),
             }
             for criterio_id, criterio_nome in criterios_pontuacao:
                 coluna = self._coluna_pontuacao_criterio(criterio_id)
                 resultado_criterio = resultado.obter_resultado_criterio(criterio_id)
                 linha[coluna] = resultado_criterio.pontuacao if resultado_criterio else None
             linha["pontuacao_total"] = resultado.pontuacao_total
+            for criterio_id, _ in criterios_revisao:
+                coluna = self._coluna_revisao_criterio(criterio_id)
+                resultado_criterio = resultado.obter_resultado_criterio(criterio_id)
+                linha[coluna] = self._texto_revisao_criterio(resultado_criterio)
             linhas.append(linha)
 
         self._escrever_tabela(worksheet, cabecalho, linhas, labels=labels)
+        self._aplicar_destaque_top_20(worksheet, cabecalho)
 
     def _preencher_pendencias_revisao(
         self,
@@ -276,6 +296,10 @@ class ExportadorExcel:
             celula.number_format = "0.00"
             celula.fill = PatternFill(fill_type="solid", fgColor=COR_AMARELO)
             celula.font = Font(color=COR_AMARELO_TEXTO, bold=True)
+        elif self._eh_coluna_revisao_criterio(nome_coluna):
+            if valor:
+                celula.fill = PatternFill(fill_type="solid", fgColor=COR_AMARELO)
+                celula.font = Font(color=COR_AMARELO_TEXTO, bold=False)
         elif nome_coluna in COLUNAS_NUMERICAS_DECIMAIS and isinstance(valor, (int, float)):
             celula.number_format = "0.00"
         elif nome_coluna in COLUNAS_NUMERICAS_INTEIRAS and isinstance(valor, (int, float)):
@@ -339,6 +363,8 @@ class ExportadorExcel:
             or self._eh_coluna_pontuacao_criterio(nome_coluna)
         ):
             return Alignment(horizontal="center", vertical="center")
+        if self._eh_coluna_revisao_criterio(nome_coluna):
+            return Alignment(horizontal="left", vertical="top", wrap_text=True)
         return Alignment(horizontal="left", vertical="top", wrap_text=nome_coluna in COLUNAS_LARGAS)
 
     def _ajustar_largura_colunas(self, worksheet, cabecalho: list[str]) -> None:
@@ -347,6 +373,8 @@ class ExportadorExcel:
             nome_coluna = cabecalho[indice_coluna - 1] if indice_coluna - 1 < len(cabecalho) else ""
             if self._eh_coluna_pontuacao_criterio(nome_coluna):
                 limite = 24
+            elif self._eh_coluna_revisao_criterio(nome_coluna):
+                limite = 80
             else:
                 limite = 80 if nome_coluna in COLUNAS_LARGAS else 28
             largura = min(max(len(valor) for valor in valores) + 2, limite) if valores else 12
@@ -364,6 +392,9 @@ class ExportadorExcel:
     def _eh_coluna_pontuacao_criterio(self, nome_coluna: str) -> bool:
         return nome_coluna.startswith("pontos__")
 
+    def _eh_coluna_revisao_criterio(self, nome_coluna: str) -> bool:
+        return nome_coluna.startswith("revisao__")
+
     def _coletar_criterios_pontuacao(
         self,
         ranking: list[ResultadoInscricao],
@@ -378,11 +409,100 @@ class ExportadorExcel:
                 criterios.append((criterio.criterio_id, criterio.criterio_nome))
         return criterios
 
+    def _coletar_criterios_revisao(
+        self,
+        ranking: list[ResultadoInscricao],
+    ) -> list[tuple[str, str]]:
+        criterios: list[tuple[str, str]] = []
+        vistos: set[str] = set()
+        for resultado in ranking:
+            for criterio in resultado.resultados_criterios:
+                if not criterio.revisao_humana_pendente or criterio.criterio_id in vistos:
+                    continue
+                vistos.add(criterio.criterio_id)
+                criterios.append((criterio.criterio_id, criterio.criterio_nome))
+        return criterios
+
     def _coluna_pontuacao_criterio(self, criterio_id: str) -> str:
         return f"pontos__{criterio_id}"
+
+    def _coluna_revisao_criterio(self, criterio_id: str) -> str:
+        return f"revisao__{criterio_id}"
 
     def _formatar_nome_criterio(self, criterio_nome: str) -> str:
         texto = str(criterio_nome or "").strip().replace("_", " ")
         if not texto:
             return "criterio"
         return texto[0].upper() + texto[1:]
+
+    def _montar_resumo_classificacao(self, resultado: ResultadoInscricao) -> str:
+        partes: list[str] = []
+        for criterio in resultado.resultados_criterios:
+            if criterio.categoria == "pontuacao":
+                prefixo = f"{criterio.criterio_nome}: {criterio.pontuacao:.2f}"
+                if criterio.pontuacao_maxima is not None:
+                    prefixo += f"/{criterio.pontuacao_maxima:.2f}"
+            else:
+                prefixo = f"{criterio.criterio_nome}: {criterio.resultado}"
+
+            justificativa = (criterio.justificativa or "").strip()
+            if justificativa:
+                partes.append(f"{prefixo}. {justificativa}")
+            else:
+                partes.append(prefixo)
+
+        return "\n".join(partes)
+
+    def _texto_revisao_criterio(self, resultado_criterio) -> str | None:
+        if resultado_criterio is None or not resultado_criterio.revisao_humana_pendente:
+            return None
+
+        justificativa = (resultado_criterio.justificativa or "").strip()
+        if justificativa:
+            return justificativa
+        return "Criterio encaminhado para revisao humana."
+
+    def _aplicar_destaque_top_20(self, worksheet, cabecalho: list[str]) -> None:
+        limite = min(worksheet.max_row, 21)
+        colunas_neutras = {
+            "ordem",
+            "empresa_nome",
+            "razao_social",
+            "cnpj",
+            "pontuacao_total",
+            "motivo_status_final",
+            "resumo_classificacao",
+        }
+
+        for indice_linha in range(2, limite + 1):
+            preenchimento_posicao, preenchimento_top, fonte_posicao = self._estilo_top_20(indice_linha - 1)
+            for indice_coluna, nome_coluna in enumerate(cabecalho, start=1):
+                celula = worksheet.cell(row=indice_linha, column=indice_coluna)
+                if nome_coluna == "ordem":
+                    celula.fill = preenchimento_posicao
+                    celula.font = fonte_posicao
+                elif (
+                    nome_coluna in colunas_neutras
+                    and nome_coluna not in COLUNAS_STATUS
+                    and not self._eh_coluna_pontuacao_criterio(nome_coluna)
+                ):
+                    celula.fill = preenchimento_top
+
+    def _estilo_top_20(self, posicao: int) -> tuple[PatternFill, PatternFill, Font]:
+        if posicao <= 5:
+            return (
+                PatternFill(fill_type="solid", fgColor="1F8F43"),
+                PatternFill(fill_type="solid", fgColor="E3F6E7"),
+                Font(color="FFFFFF", bold=True),
+            )
+        if posicao <= 10:
+            return (
+                PatternFill(fill_type="solid", fgColor="3A78D6"),
+                PatternFill(fill_type="solid", fgColor="E8F0FF"),
+                Font(color="FFFFFF", bold=True),
+            )
+        return (
+            PatternFill(fill_type="solid", fgColor="FFCF24"),
+            PatternFill(fill_type="solid", fgColor="FFF7D8"),
+            Font(color="6B4A00", bold=True),
+        )

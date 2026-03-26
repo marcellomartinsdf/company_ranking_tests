@@ -471,7 +471,7 @@
           <div class="hero-highlights">
             <div class="highlight">
               <strong>Entrada única</strong>
-              <span>A equipe pode enviar só a planilha do Dynamics ou, quando necessário, anexar um regulamento JSON com regras específicas da ação.</span>
+              <span>A equipe envia a planilha do Dynamics e escolhe um regulamento vigente da ação.</span>
             </div>
             <div class="highlight">
               <strong>Análise automática</strong>
@@ -497,7 +497,7 @@
 
           <h2 class="section-title">Novo processamento</h2>
           <p class="section-lead">
-            O fluxo segue simples para o dia a dia: suba a planilha exportada do Dynamics e, se precisar, envie também um regulamento JSON para sobrescrever as regras padrão.
+            O fluxo segue simples para o dia a dia: suba a planilha exportada do Dynamics, selecione o regulamento da ação e gere o ranking final.
           </p>
 
           <form method="post" action="{{ url_for('processar') }}" enctype="multipart/form-data" class="field-grid" id="process-form">
@@ -531,12 +531,19 @@
 
             <div class="field-group">
               <h3>3. Regulamento da ação</h3>
-              <p>Opcional. Se nada for enviado, o sistema usa o regulamento padrão já configurado.</p>
+              <p>Escolha um regulamento pré-configurado. A planilha de saída usa os critérios e a ordem de pontuação do regulamento selecionado.</p>
 
               <label>
-                Regulamento JSON com regras
-                <span class="hint">Use esta opção quando a ação tiver critérios diferentes e a equipe já tiver o regulamento estruturado em JSON.</span>
-                <input type="file" name="regulamento_customizado" accept=".json">
+                Regulamento pré-configurado
+                <span class="hint">A planilha de saída usa automaticamente os critérios e a ordem de pontuação do regulamento selecionado.</span>
+                <select name="regulamento_preset">
+                  <option value="">Usar regulamento padrão</option>
+                  {% for regulamento in regulamentos %}
+                    <option value="{{ regulamento.arquivo }}" {% if regulamento.arquivo == default_regulamento %}selected{% endif %}>
+                      {{ regulamento.nome_programa }}{% if regulamento.versao %} - v{{ regulamento.versao }}{% endif %}
+                    </option>
+                  {% endfor %}
+                </select>
               </label>
             </div>
 
@@ -559,7 +566,7 @@
               <strong>Fluxo operacional completo</strong>
               <ul>
                 <li>Upload da planilha de inscrições.</li>
-                <li>Aplicação automática do regulamento padrão ou de um JSON enviado pela equipe.</li>
+                <li>Aplicação do regulamento pré-selecionado.</li>
                 <li>Geração direta do ranking final.</li>
               </ul>
             </section>
@@ -589,9 +596,9 @@
             <strong>Regulamento aplicado</strong>
             <p>
               {% if regulamento_aplicado %}
-                O processamento web usa automaticamente o regulamento padrão configurado no sistema:
+                O processamento web usa, por padrão, o regulamento:
                 <strong>{{ regulamento_aplicado.nome_programa }}</strong>{% if regulamento_aplicado.versao %} - v{{ regulamento_aplicado.versao }}{% endif %}.
-                Se a equipe anexar um arquivo JSON no formulário, ele passa a valer apenas para aquele processamento.
+                A equipe pode trocar para outro regulamento pré-configurado no formulário, e a saída muda conforme os critérios desse regulamento.
               {% else %}
                 Nenhum regulamento padrão foi encontrado. Adicione um arquivo JSON em `config/` para habilitar o processamento.
               {% endif %}

@@ -1,0 +1,542 @@
+{
+  "nome_programa": "Exporta Mais Brasil - Rodada de Negocios Construcao 2026",
+  "versao": "1.0",
+  "vagas": 30,
+  "metadados_conversao": {
+    "fonte_documento": "Regulamento_ExportaMaisBrasil_Construcao.pdf",
+    "data_evento": "2026-05-19",
+    "observacoes": [
+      "A regra de representacao por trading/comercial exportadora foi convertida para o campo booleano 'representacao_trading_regular', que deve ser verdadeiro quando a declaracao do Anexo I tiver sido apresentada ou quando a regra nao se aplicar a empresa.",
+      "O desempate foi interpretado como prioridade para os criterios B, C, D, E e A, nesta ordem, antes de data e horario de conclusao da inscricao."
+    ]
+  },
+  "origem_dados": {
+    "sheet_name": "Ranqueamento",
+    "mapeamento_campos": {
+      "inscricao_id": ["Inscricao (Codigo)", "Inscrição (Código)", "ID"],
+      "empresa_nome": ["Nome Fantasia", "Razao Social", "Razão Social", "Empresa"],
+      "razao_social": ["Razao Social", "Razão Social", "Razao social"],
+      "cnpj": ["CNPJ"],
+      "data_submissao": [
+        "Data de Conclusao",
+        "Data de Conclusão",
+        "Data de Inscricao",
+        "Data de Inscrição",
+        "Data e horario de conclusao da inscricao",
+        "Data e horário de conclusão da inscrição",
+        "Created On"
+      ],
+      "email": ["Email", "E-mail"],
+      "telefone_principal": ["Telefone Principal", "Telefone"],
+      "cargo": ["Cargo"],
+      "razao_status": ["Razão de Status", "Razao de Status", "Status Reason"],
+      "status_financeiro": ["Status Financeiro"],
+      "cnae_primario": ["CNAE Primário", "CNAE Primario"],
+      "produtos_exportacao": [
+        "Informe os produtos (SH6/NCM e descrição) que a empresa pretende exportar nesta rodada de negócios: (C005)",
+        "Informe os produtos (SH6/NCM e descricao) que a empresa pretende exportar nesta rodada de negocios: (C005)",
+        "NCMs",
+        "Principais Produtos"
+      ],
+      "perfil_empresa": [
+        "Por gentileza, indique o perfil da sua empresa: (C012)",
+        "Perfil da empresa",
+        "Perfil Empresa"
+      ],
+      "setor_atuacao_primario": ["Setor de Atuacao Primario", "Setor", "Segmento"],
+      "perfil_setor_construcao_aderente": [
+        "Perfil Setor Construcao Aderente",
+        "Perfil Setor Construção Aderente",
+        "Setor Construção Aderente",
+        "Setor Construcao Aderente",
+        "Casa e construcao",
+        "Casa & construcao",
+        "Setor de construcao"
+      ],
+      "empresa_exportadora": [
+        "Empresa Exportadora",
+        "Exportadora",
+        "Empresa brasileira exportadora",
+        "Exporta",
+        "Ja exportou",
+        "Já exportou",
+        "Sua empresa e exportadora",
+        "Sua empresa é exportadora",
+        "Sua empresa brasileira e exportadora",
+        "Sua empresa brasileira é exportadora"
+      ],
+      "exporta_via_trading": [
+        "Trading",
+        "Comercial Exportadora",
+        "Agente Comercial",
+        "Exporta por trading",
+        "Exporta via trading",
+        "Sua empresa exporta via trading company",
+        "Sua empresa exporta via comercial exportadora",
+        "Sua empresa exporta via agente comercial",
+        "Exporta via trading company ou comercial exportadora"
+      ],
+      "representacao_trading_regular": [
+        "Representacao Trading Regular",
+        "Representação Trading Regular",
+        "Declaracao de Representacao Regular",
+        "Declaração de Representação Regular",
+        "Anexo I",
+        "Representacao por trading regular",
+        "Representação por trading regular"
+      ],
+      "declaracao_representacao_link": [
+        "Declaracao de Representacao",
+        "Declaração de Representação",
+        "Anexo I",
+        "Link Declaracao Trading",
+        "Informe o link da declaracao de representacao preenchida e assinada",
+        "Informe o link da declaração de representação preenchida e assinada",
+        "Link da declaracao do Anexo I",
+        "Link da declaração do Anexo I"
+      ],
+      "exportou_diretamente_ultimos_2_anos": [
+        "Empresa exportou diretamente nos ultimos 2 anos",
+        "Empresa exportou diretamente nos últimos 2 anos",
+        "Exportou diretamente ultimos 2 anos",
+        "Exportou diretamente últimos 2 anos",
+        "Exportacao direta",
+        "Exportação direta",
+        "Sua empresa exportou diretamente nos ultimos 2 anos",
+        "Sua empresa exportou diretamente nos últimos 2 anos",
+        "A empresa exportou diretamente nos ultimos 2 anos",
+        "A empresa exportou diretamente nos últimos 2 anos",
+        "Sua empresa exportou diretamente ou indiretamente nos últimos 2 anos? (C011)",
+        "Sua empresa exportou diretamente ou indiretamente nos ultimos 2 anos? (C011)"
+      ],
+      "evidencia_exportacao_direta_link": [
+        "Evidencia Exportacao Direta",
+        "Evidência Exportação Direta",
+        "Comprovacao Exportacao Direta",
+        "Comprovação Exportação Direta",
+        "Informe o link do documento comprobatorio de exportacao direta",
+        "Informe o link do documento comprobatório de exportação direta",
+        "Link do comprovante de exportacao direta",
+        "Link do comprovante de exportação direta"
+      ],
+      "liderada_por_mulher": [
+        "A empresa é gerenciada ou controlada por mulher?",
+        "A empresa e gerenciada ou controlada por mulher?",
+        "Liderada por mulher",
+        "Liderança feminina",
+        "Empresa liderada por mulher",
+        "Protagonismo feminino",
+        "Mulher no board",
+        "Mulher em posicao de tomada de decisao",
+        "Sua empresa tem lideranca desempenhada por mulheres",
+        "Sua empresa tem liderança desempenhada por mulheres",
+        "Sua empresa possui lideranca feminina",
+        "Sua empresa possui liderança feminina"
+      ],
+      "participa_peiex": [
+        "PEIEX",
+        "Atendimento PEIEX",
+        "Participa do PEIEX",
+        "Sua empresa obteve atendimento PEIEX",
+        "Sua empresa obteve atendimento PEIEX ate o final do prazo das inscricoes",
+        "Sua empresa obteve atendimento PEIEX até o final do prazo das inscrições",
+        "Sua empresa já foi atendida pelo PEIEX ou agroBR? (C023)",
+        "Sua empresa ja foi atendida pelo PEIEX ou agroBR? (C023)",
+        "Sua empresa já foi atendida pelo PEIEX ou agroBR? (C023)",
+        "Sua empresa ja foi atendida pelo PEIEX ou agroBR? (C023)"
+      ],
+      "presenca_digital_global": [
+        "A sua empresa possui presença digital global? (C018)",
+        "A sua empresa possui presenca digital global? (C018)"
+      ],
+      "buybrazil_perfil_completo": [
+        "Página/perfil completo na plataforma BuyBrazil (www.buybrazil.com). (2 pontos) (C019)",
+        "Pagina/perfil completo na plataforma BuyBrazil (www.buybrazil.com). (2 pontos) (C019)"
+      ],
+      "diversidade_liderancas_estrategicas": [
+        "A sua empresa possui diversidade de gênero ou étnica entre as lideranças estratégicas? (C028)",
+        "A sua empresa possui diversidade de genero ou etnica entre as liderancas estrategicas? (C028)"
+      ],
+      "cooperativa": [
+        "A sua empresa é uma cooperativa? (C029)",
+        "A sua empresa e uma cooperativa? (C029)"
+      ],
+      "cooperativa_agricultura_familiar": [
+        "Ela é uma cooperativa de agricultura familiar? (C030)",
+        "Ela e uma cooperativa de agricultura familiar? (C030)"
+      ],
+      "cartao_cnpj_link": [
+        "Cartao CNPJ",
+        "Cartão CNPJ",
+        "Link Cartao CNPJ",
+        "Link Cartão CNPJ",
+        "Informe link da pasta com a copia do cartao CNPJ da Receita Federal",
+        "Informe link da pasta com a cópia do cartão CNPJ da Receita Federal"
+      ],
+      "website_empresa": [
+        "Website",
+        "Site",
+        "Rede Social",
+        "Perfil em Rede Social",
+        "Informe o website da empresa ou sua conta nas redes sociais",
+        "Informe o website da empresa ou sua conta nas redes sociais:"
+      ],
+      "website_internacional_link": [
+        "Website em idioma estrangeiro",
+        "Link Website Idioma Estrangeiro",
+        "Link do Website",
+        "Link Rede Social Idioma Estrangeiro",
+        "Perfil em rede social em idioma estrangeiro",
+        "Informe o website da empresa ou sua conta nas redes sociais",
+        "Informe o website da empresa ou sua conta nas redes sociais:",
+        "Informe o link deste website ou perfil em rede social em idioma estrangeiro",
+        "Informe o link deste website ou perfil em rede social em idioma estrangeiro:",
+        "Informe o link do website ou perfil em rede social em idioma estrangeiro"
+      ],
+      "website_internacional_resposta": [
+        "Possui website em idioma estrangeiro",
+        "Possui perfil em rede social em idioma estrangeiro",
+        "Website em idioma estrangeiro evidenciado",
+        "Sua empresa possui website ou perfil em rede social em idioma estrangeiro",
+        "Possui website ou perfil em rede social em idioma estrangeiro",
+        "Website em idioma estrangeiro. (1 ponto) (C020)",
+        "Redes sociais em idioma estrangeiro. (1 ponto) (C022)"
+      ],
+      "material_promocional_idioma_estrangeiro": [
+        "Material promocional em idioma estrangeiro",
+        "Catalogo em idioma estrangeiro",
+        "Folder em idioma estrangeiro",
+        "Sua empresa possui material promocional em idioma estrangeiro",
+        "Sua empresa possui material promocional catalogo e ou folder em idioma estrangeiro",
+        "Sua empresa possui material promocional catálogo e/ou folder em idioma estrangeiro",
+        "Catálogo em idioma estrangeiro. (1 ponto) (C021)",
+        "Catalogo em idioma estrangeiro. (1 ponto) (C021)"
+      ],
+      "catalogo_digital_link": [
+        "Catalogo Digital",
+        "Catálogo Digital",
+        "Folder",
+        "Material Promocional",
+        "Link Catalogo",
+        "Informe o link da pasta para download com o catalogo ou folder",
+        "Informe o link da pasta para download com o catálogo ou folder",
+        "Link do catalogo ou folder em idioma estrangeiro",
+        "Link do catálogo ou folder em idioma estrangeiro"
+      ],
+      "pontuacao_exportacao_direta_legado": [
+        "Pontuacao Criterio A",
+        "Pontuacao Exportacao Direta",
+        "Pontuação Exportação Direta",
+        "Pontos - Empresa exportou diretamente nos ultimos 2 anos",
+        "pontos empresa exportou diretamente nos ultimos 2 anos",
+        "pontos_empresa_exportou_diretamente_nos_ultimos_2_anos"
+      ],
+      "pontuacao_lideranca_feminina_legado": [
+        "Pontuacao Criterio B",
+        "Pontuacao Lideranca Feminina",
+        "Pontuação Liderança Feminina",
+        "Pontos - Lideranca feminina",
+        "pontos lideranca feminina",
+        "pontos_lideranca_feminina"
+      ],
+      "pontuacao_peiex_legado": [
+        "Pontuacao Criterio C",
+        "Pontuacao PEIEX",
+        "Pontuação PEIEX",
+        "Pontos - Atendimento PEIEX ate o fim das inscricoes",
+        "pontos atendimento peiex ate o fim das inscricoes",
+        "pontos_atendimento_peiex_ate_o_fim_das_inscricoes"
+      ],
+      "pontuacao_website_estrangeiro_legado": [
+        "Pontuacao Criterio D",
+        "Pontuacao Website Idioma Estrangeiro",
+        "Pontuação Website Idioma Estrangeiro",
+        "Pontos - Website ou perfil em rede social em idioma estrangeiro",
+        "pontos website ou perfil em rede social em idioma estrangeiro",
+        "pontos_website_ou_perfil_em_rede_social_em_idioma_estrangeiro"
+      ],
+      "pontuacao_material_promocional_legado": [
+        "Pontuacao Criterio E",
+        "Pontuacao Material Promocional",
+        "Pontuação Material Promocional",
+        "Pontos - Material promocional em idioma estrangeiro",
+        "pontos material promocional em idioma estrangeiro",
+        "pontos_material_promocional_em_idioma_estrangeiro"
+      ],
+      "pontuacao_total_legado": ["Pontuacao Total", "Pontuação Total", "Nota total"]
+    },
+    "filtros_entrada": [
+      {
+        "id": "status_dynamics_analise",
+        "modo": "include",
+        "tipo": "texto_em_lista",
+        "campo": "razao_status",
+        "valores": [
+          "Aprovada",
+          "Aprovado",
+          "Pré Aprovada",
+          "Pre Aprovada",
+          "Pré Aprovado",
+          "Pre Aprovado",
+          "Pendente Avaliação",
+          "Pendente Avaliacao",
+          "Pendente Revisão",
+          "Pendente Revisao"
+        ]
+      },
+      {
+        "id": "excluir_testes_apexbrasil",
+        "modo": "exclude",
+        "tipo": "texto_contem_algum",
+        "campos": ["empresa_nome", "razao_social", "email"],
+        "valores": [
+          "ApexBrasil",
+          "Apex Brasil",
+          "APEX-BRASIL",
+          "APEX BRASIL",
+          "@apexbrasil.com.br",
+          "empresa_sem_nome_"
+        ]
+      }
+    ],
+    "deduplicacao": {
+      "tipo": "cnpj_primeira_submissao",
+      "campo": "cnpj",
+      "campo_data": "data_submissao"
+    }
+  },
+  "saida_excel": {
+    "somente_ranking_final": true
+  },
+  "verificacoes_automaticas": {
+    "timeout_segundos": 12,
+    "max_download_bytes": 10485760,
+    "usar_openai_quando_disponivel": true,
+    "openai": {
+      "model": "gpt-4.1-mini",
+      "timeout_segundos": 25
+    },
+    "status_financeiro": {
+      "campo": "status_financeiro",
+      "valores_sem_pendencia": ["Adimplente"],
+      "tokens_com_pendencia": ["inadimpl", "pendenc", "debito"]
+    },
+    "perfil_setorial": {
+      "campo_saida": "perfil_setor_construcao_aderente",
+      "campos_origem": ["setor_atuacao_primario", "cnae_primario", "produtos_exportacao"],
+      "termos_positivos": [
+        "casa e construcao",
+        "construcao",
+        "tintas",
+        "ferragens",
+        "esquadrias",
+        "aluminio",
+        "metalurg",
+        "iluminacao",
+        "luminarias",
+        "madeira",
+        "eletricos",
+        "eletricos e equipamentos de protecao",
+        "vidro",
+        "ceramic",
+        "hidraul",
+        "sanitari",
+        "impermeabilizacao",
+        "drenagem",
+        "fechaduras",
+        "acabamento"
+      ]
+    },
+    "cnpj": {
+      "campo": "cnpj"
+    },
+    "website_social": {
+      "campo": "website_empresa",
+      "campo_saida": "website_ou_rede_social_verificado"
+    },
+    "website_internacional": {
+      "campo_link": "website_internacional_link",
+      "campo_resposta": "website_internacional_resposta",
+      "campo_saida": "website_internacional_verificado"
+    },
+    "cartao_cnpj": {
+      "campos_link": ["cartao_cnpj_link"],
+      "campo_saida": "cartao_cnpj_verificado"
+    }
+  },
+  "elegibilidade": [
+    {
+      "id": "setor_construcao_aderente",
+      "nome": "Empresa do setor de construcao",
+      "tipo": "equals",
+      "campo": "perfil_setor_construcao_aderente",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "campo_justificativa": "perfil_setor_construcao_aderente_justificativa",
+      "mensagem_aprovado": "Empresa aderente ao perfil setorial de construcao do regulamento.",
+      "mensagem_reprovado": "Empresa fora do perfil setorial previsto no regulamento."
+    },
+    {
+      "id": "empresa_exportadora",
+      "nome": "Empresa brasileira exportadora",
+      "tipo": "equals",
+      "campo": "empresa_exportadora",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "mensagem_aprovado": "Empresa declarada como exportadora.",
+      "mensagem_reprovado": "Empresa nao atende ao perfil de empresa brasileira exportadora."
+    },
+    {
+      "id": "representacao_trading_regular",
+      "nome": "Representacao por trading/comercial exportadora regular",
+      "tipo": "equals",
+      "campo": "representacao_trading_regular",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "aprovar_provisoriamente_quando_pendente": true,
+      "campo_valor_observado": "declaracao_representacao_link",
+      "campo_justificativa": "representacao_trading_regular_justificativa",
+      "mensagem_aprovado": "A representacao por trading/comercial exportadora esta regular ou nao se aplica.",
+      "mensagem_reprovado": "Empresa que exporta por trading/comercial exportadora nao comprovou a representacao exigida pelo Anexo I."
+    }
+  ],
+  "verificacoes": [
+    {
+      "id": "cnpj_estrutural_valido",
+      "nome": "CNPJ com estrutura valida",
+      "tipo": "equals",
+      "campo": "cnpj_valido",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "cnpj_valor_observado",
+      "campo_justificativa": "cnpj_justificativa"
+    },
+    {
+      "id": "website_verificado",
+      "nome": "Website ou rede social verificado automaticamente",
+      "tipo": "equals",
+      "campo": "website_ou_rede_social_verificado",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "website_ou_rede_social_verificado_valor_observado",
+      "campo_justificativa": "website_ou_rede_social_verificado_justificativa",
+      "campo_revisao_humana": "website_ou_rede_social_verificado_revisao_humana"
+    },
+    {
+      "id": "website_internacional_verificado",
+      "nome": "Website ou perfil em idioma estrangeiro verificado",
+      "tipo": "equals",
+      "campo": "website_internacional_verificado",
+      "valor_esperado": true,
+      "politica_campo_ausente": "review",
+      "campo_valor_observado": "website_internacional_verificado_valor_observado",
+      "campo_justificativa": "website_internacional_verificado_justificativa",
+      "campo_revisao_humana": "website_internacional_verificado_revisao_humana"
+    }
+  ],
+  "pontuacao": {
+    "nota_minima_classificacao": 0,
+    "criterios": [
+      {
+        "id": "criterio_a_exportacao_direta",
+        "nome": "Empresa exportou diretamente nos ultimos 2 anos",
+        "tipo": "binary_score",
+        "campo": "exportou_diretamente_ultimos_2_anos",
+        "valor_esperado": true,
+        "campo_score_override": "pontuacao_exportacao_direta_legado",
+        "pontuacao": 2,
+        "pontuacao_maxima": 2,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Validar a evidencia de exportacao direta apresentada pela empresa."
+      },
+      {
+        "id": "criterio_b_lideranca_feminina",
+        "nome": "Lideranca feminina",
+        "tipo": "binary_score",
+        "campo": "liderada_por_mulher",
+        "valor_esperado": true,
+        "campo_score_override": "pontuacao_lideranca_feminina_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1
+      },
+      {
+        "id": "criterio_c_peiex",
+        "nome": "Atendimento PEIEX ate o fim das inscricoes",
+        "tipo": "binary_score",
+        "campo": "participa_peiex",
+        "valor_esperado": true,
+        "campo_score_override": "pontuacao_peiex_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "politica_campo_ausente": "review",
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Conferir a base de atendimento PEIEX quando a informacao nao estiver evidente na planilha."
+      },
+      {
+        "id": "criterio_d_website_idioma_estrangeiro",
+        "nome": "Website ou perfil em rede social em idioma estrangeiro",
+        "tipo": "binary_score",
+        "campo": "website_internacional_verificado",
+        "valor_esperado": true,
+        "campo_score_override": "pontuacao_website_estrangeiro_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "politica_campo_ausente": "review",
+        "campo_valor_observado": "website_internacional_verificado_valor_observado",
+        "campo_justificativa": "website_internacional_verificado_justificativa",
+        "campo_revisao_humana": "website_internacional_verificado_revisao_humana",
+        "contabilizar_sugestao_na_nota": true
+      },
+      {
+        "id": "criterio_e_material_promocional_idioma_estrangeiro",
+        "nome": "Material promocional em idioma estrangeiro",
+        "tipo": "binary_score",
+        "campo": "material_promocional_idioma_estrangeiro",
+        "valor_esperado": true,
+        "campos_evidencia": ["catalogo_digital_link"],
+        "campo_score_override": "pontuacao_material_promocional_legado",
+        "pontuacao": 1,
+        "pontuacao_maxima": 1,
+        "revisao_humana": true,
+        "contabilizar_sugestao_na_nota": true,
+        "mensagem_sugestao": "Validar se o catalogo e/ou folder anexo esta em idioma estrangeiro."
+      }
+    ]
+  },
+  "desempate": [
+    {
+      "tipo": "criterio",
+      "criterio_id": "criterio_b_lideranca_feminina",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "criterio_c_peiex",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "criterio_d_website_idioma_estrangeiro",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "criterio_e_material_promocional_idioma_estrangeiro",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "criterio",
+      "criterio_id": "criterio_a_exportacao_direta",
+      "ordem": "desc"
+    },
+    {
+      "tipo": "campo",
+      "campo": "data_submissao",
+      "ordem": "asc"
+    }
+  ]
+}

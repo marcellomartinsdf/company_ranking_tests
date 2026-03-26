@@ -14,6 +14,7 @@
       "email": ["Email"],
       "telefone_principal": ["Telefone Principal"],
       "cargo": ["Cargo"],
+      "razao_status": ["Razão de Status", "Razao de Status", "Status Reason"],
       "status_financeiro": ["Status Financeiro"],
       "maturidade_vigente": ["Maturidade Vigente"],
       "classificacao_maturidade_exportadora": ["Classificacao Maturidade Exportadora"],
@@ -102,7 +103,44 @@
       ],
       "pontuacao_certificacao_internacional_legado": ["Pontuacao certificacao internacional"],
       "pontuacao_total_legado": ["Pontuacao total"]
-    }
+    },
+    "filtros_entrada": [
+      {
+        "id": "status_dynamics_analise",
+        "modo": "include",
+        "tipo": "texto_em_lista",
+        "campo": "razao_status",
+        "valores": [
+          "Aprovada",
+          "Aprovado",
+          "Pré Aprovada",
+          "Pre Aprovada",
+          "Pré Aprovado",
+          "Pre Aprovado",
+          "Pendente Avaliação",
+          "Pendente Avaliacao",
+          "Pendente Revisão",
+          "Pendente Revisao"
+        ]
+      },
+      {
+        "id": "excluir_testes_apexbrasil",
+        "modo": "exclude",
+        "tipo": "texto_contem_algum",
+        "campos": ["empresa_nome", "razao_social", "email"],
+        "valores": [
+          "ApexBrasil",
+          "Apex Brasil",
+          "APEX-BRASIL",
+          "APEX BRASIL",
+          "@apexbrasil.com.br",
+          "empresa_sem_nome_"
+        ]
+      }
+    ]
+  },
+  "saida_excel": {
+    "somente_ranking_final": true
   },
   "verificacoes_automaticas": {
     "timeout_segundos": 12,

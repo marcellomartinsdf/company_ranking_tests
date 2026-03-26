@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 from webapp import create_app
 
@@ -77,7 +77,7 @@ class WebAppTestCase(unittest.TestCase):
             arquivos = list(storage_dir.glob("**/*.xlsx"))
             self.assertTrue(arquivos)
 
-    def test_deve_processar_upload_com_regulamento_json_customizado(self) -> None:
+    def test_deve_usar_criterios_do_regulamento_pre_selecionado_na_saida(self) -> None:
         with tempfile.TemporaryDirectory() as diretorio_temporario:
             base = Path(diretorio_temporario)
             config_dir = base / "config"
@@ -86,33 +86,15 @@ class WebAppTestCase(unittest.TestCase):
             storage_dir.mkdir(parents=True, exist_ok=True)
 
             regulamento_padrao = {
-                "nome_programa": "Padrao",
+                "nome_programa": "Jornada Exportadora Autopartes - Argentina e Peru 2026",
                 "versao": "1.0",
                 "elegibilidade": [],
-                "pontuacao": {"nota_minima_classificacao": 0, "criterios": []},
-                "desempate": [],
-            }
-            (config_dir / "padrao.json").write_text(
-                json.dumps(regulamento_padrao),
-                encoding="utf-8",
-            )
-
-            regulamento_customizado = {
-                "nome_programa": "Acao Customizada",
-                "versao": "1.0",
-                "elegibilidade": [
-                    {
-                        "id": "aceite_regulamento",
-                        "tipo": "equals",
-                        "campo": "aceite_regulamento",
-                        "valor_esperado": True,
-                    }
-                ],
                 "pontuacao": {
-                    "nota_minima_classificacao": 1,
+                    "nota_minima_classificacao": 0,
                     "criterios": [
                         {
                             "id": "website",
+                            "nome": "Website institucional",
                             "tipo": "presence_score",
                             "campo": "website",
                             "pontuacao": 1,
@@ -121,6 +103,41 @@ class WebAppTestCase(unittest.TestCase):
                 },
                 "desempate": [],
             }
+            regulamento_construcao = {
+                "nome_programa": "Exporta Mais Brasil - Construcao 2026",
+                "versao": "1.0",
+                "elegibilidade": [],
+                "pontuacao": {
+                    "nota_minima_classificacao": 0,
+                    "criterios": [
+                        {
+                            "id": "exportacao_direta",
+                            "nome": "Exportacao direta nos ultimos 2 anos",
+                            "tipo": "binary_score",
+                            "campo": "exportou_diretamente_ultimos_2_anos",
+                            "valor_esperado": True,
+                            "pontuacao": 2,
+                        },
+                        {
+                            "id": "lideranca_feminina",
+                            "nome": "Lideranca feminina",
+                            "tipo": "binary_score",
+                            "campo": "liderada_por_mulher",
+                            "valor_esperado": True,
+                            "pontuacao": 1,
+                        },
+                    ],
+                },
+                "desempate": [],
+            }
+            (config_dir / "regulamento_jornada_exportadora_autopartes_2026.json").write_text(
+                json.dumps(regulamento_padrao),
+                encoding="utf-8",
+            )
+            (config_dir / "regulamento_exporta_mais_brasil_construcao_2026.json").write_text(
+                json.dumps(regulamento_construcao),
+                encoding="utf-8",
+            )
 
             app = create_app()
             app.config["TESTING"] = True
@@ -132,18 +149,15 @@ class WebAppTestCase(unittest.TestCase):
             resposta = client.post(
                 "/processar",
                 data={
+                    "regulamento_preset": "regulamento_exporta_mais_brasil_construcao_2026.json",
                     "planilha": (
                         io.BytesIO(
                             (
-                                "inscricao_id,empresa_nome,aceite_regulamento,website\n"
-                                "1,Empresa A,Sim,https://empresa-a.com\n"
+                                "inscricao_id,empresa_nome,exportou_diretamente_ultimos_2_anos,liderada_por_mulher\n"
+                                "1,Empresa A,Sim,Sim\n"
                             ).encode("utf-8")
                         ),
                         "inscricoes.csv",
-                    ),
-                    "regulamento_customizado": (
-                        io.BytesIO(json.dumps(regulamento_customizado).encode("utf-8")),
-                        "acao_customizada.json",
                     ),
                 },
                 content_type="multipart/form-data",
@@ -151,8 +165,18 @@ class WebAppTestCase(unittest.TestCase):
 
             self.assertEqual(resposta.status_code, 200)
             conteudo = resposta.get_data(as_text=True)
-            self.assertIn("acao_customizada.json", conteudo)
-            self.assertIn("Baixar Excel", conteudo)
+            self.assertIn("Exporta Mais Brasil - Construcao 2026", conteudo)
+
+            arquivos = list(storage_dir.glob("**/*.xlsx"))
+            self.assertTrue(arquivos)
+
+            workbook = load_workbook(arquivos[0], read_only=True, data_only=True)
+            ranking_final = workbook["ranking_final"]
+            cabecalho = [celula.value for celula in ranking_final[1]]
+            self.assertIn("Pontos - Exportacao direta nos ultimos 2 anos", cabecalho)
+            self.assertIn("Pontos - Lideranca feminina", cabecalho)
+            self.assertNotIn("Pontos - Website institucional", cabecalho)
+            workbook.close()
 
     def test_deve_processar_planilha_com_aba_diferente_no_upload_web(self) -> None:
         with tempfile.TemporaryDirectory() as diretorio_temporario:
@@ -237,7 +261,8 @@ class WebAppTestCase(unittest.TestCase):
             self.assertEqual(resposta.status_code, 200)
             conteudo = resposta.get_data(as_text=True)
             self.assertIn("Jornada Exportadora Autopartes - Argentina e Peru 2026", conteudo)
-            self.assertIn("regulamento_customizado", conteudo)
+            self.assertIn("regulamento_preset", conteudo)
+            self.assertNotIn("regulamento_customizado", conteudo)
             self.assertNotIn("regulamento_documento", conteudo)
 
 

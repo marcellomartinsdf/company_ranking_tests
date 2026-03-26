@@ -55,6 +55,12 @@ def _carregar_xlsx(
     field_map: dict[str, Any] | None = None,
 ) -> list[Inscricao]:
     workbook = load_workbook(filename=path, read_only=True, data_only=True)
+    if _parece_workbook_saida_sistema(workbook):
+        workbook.close()
+        raise ValueError(
+            "A planilha enviada parece ser uma saida do proprio sistema de ranqueamento. "
+            "Envie a exportacao bruta do Dynamics para calcular as notas a partir do formulario."
+        )
     worksheet = _resolver_worksheet(workbook, sheet_name)
     linhas = worksheet.iter_rows(values_only=True)
     cabecalho = _obter_primeira_linha_preenchida(linhas)
@@ -115,13 +121,58 @@ def _aplicar_mapeamento_campos(
     for campo_destino, aliases in field_map.items():
         aliases_lista = aliases if isinstance(aliases, list) else [aliases]
         for alias in aliases_lista:
-            chave_alias = normalizar_chave(alias)
-            if chave_alias not in lookup_normalizado:
-                continue
-            valor = lookup_normalizado[chave_alias]
+            valor = _buscar_valor_por_alias(lookup_normalizado, alias)
             if valor is None or str(valor).strip() == "":
                 continue
             row_mapeado[campo_destino] = valor
             break
 
     return row_mapeado
+
+
+def _buscar_valor_por_alias(lookup_normalizado: dict[str, Any], alias: Any) -> Any:
+    chave_alias = normalizar_chave(alias)
+    if not chave_alias:
+        return None
+
+    if chave_alias in lookup_normalizado:
+        return lookup_normalizado[chave_alias]
+
+    if len(chave_alias) < 12:
+        return None
+
+    tokens_alias = [token for token in chave_alias.split("_") if token]
+    alias_pontuacao = any(token in {"pontuacao", "pontos"} for token in tokens_alias)
+    candidatos: list[tuple[int, int, Any]] = []
+    for chave_lookup, valor in lookup_normalizado.items():
+        if valor is None or str(valor).strip() == "":
+            continue
+
+        if chave_alias in chave_lookup or chave_lookup in chave_alias:
+            candidatos.append((len(tokens_alias), abs(len(chave_lookup) - len(chave_alias)), valor))
+            continue
+
+        if alias_pontuacao:
+            continue
+
+        tokens_lookup = [token for token in chave_lookup.split("_") if token]
+        tokens_comuns = len(set(tokens_alias).intersection(tokens_lookup))
+        if tokens_comuns >= 3 and tokens_comuns / max(len(tokens_alias), 1) >= 0.6:
+            candidatos.append((tokens_comuns, abs(len(chave_lookup) - len(chave_alias)), valor))
+
+    if not candidatos:
+        return None
+
+    candidatos.sort(key=lambda item: (-item[0], item[1]))
+    return candidatos[0][2]
+
+
+def _parece_workbook_saida_sistema(workbook) -> bool:
+    nomes_normalizados = {normalizar_chave(nome_aba) for nome_aba in workbook.sheetnames}
+    abas_saida = {
+        "ranking_final",
+        "avaliacao_por_criterio",
+        "pendencias_revisao",
+        "inscricoes_brutas",
+    }
+    return abas_saida.issubset(nomes_normalizados)

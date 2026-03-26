@@ -304,12 +304,120 @@ class VerificacaoAutomaticaService:
         if not self.config:
             return inscricao
 
+        self._derivar_perfil_setorial(inscricao)
+        self._derivar_perfil_exportador(inscricao)
+        self._derivar_representacao_trading_regular(inscricao)
         self._derivar_status_financeiro(inscricao)
         self._verificar_cnpj(inscricao)
         self._verificar_canal_empresa(inscricao)
         self._verificar_canal_internacional(inscricao)
         self._verificar_cartao_cnpj(inscricao)
         return inscricao
+
+    def _derivar_perfil_setorial(self, inscricao: Inscricao) -> None:
+        config = self.config.get("perfil_setorial") or {}
+        if not config:
+            return
+
+        campo_saida = config.get("campo_saida", "perfil_setorial_aderente")
+        if inscricao.obter_campo(campo_saida) is not None:
+            return
+
+        campos_origem = config.get("campos_origem") or []
+        termos_positivos = [
+            normalizar_texto(termo)
+            for termo in config.get("termos_positivos", [])
+            if self._tem_valor(termo)
+        ]
+        if not campos_origem or not termos_positivos:
+            return
+
+        evidencias: list[tuple[str, Any]] = []
+        for campo in campos_origem:
+            valor = inscricao.obter_campo(campo)
+            if self._tem_valor(valor):
+                evidencias.append((campo, valor))
+
+        if not evidencias:
+            return
+
+        for campo, valor in evidencias:
+            texto = normalizar_texto(valor)
+            termo_correspondente = next(
+                (termo for termo in termos_positivos if termo and termo in texto),
+                None,
+            )
+            if termo_correspondente:
+                inscricao.definir_campo(campo_saida, True)
+                inscricao.definir_campo(
+                    f"{campo_saida}_justificativa",
+                    (
+                        f"Aderencia setorial inferida automaticamente a partir do campo "
+                        f"'{campo}' com evidencia '{valor}'."
+                    ),
+                )
+                return
+
+    def _derivar_perfil_exportador(self, inscricao: Inscricao) -> None:
+        perfil_empresa = inscricao.obter_campo("perfil_empresa")
+        if not self._tem_valor(perfil_empresa):
+            return
+
+        perfil_normalizado = normalizar_texto(perfil_empresa)
+        if inscricao.obter_campo("empresa_exportadora") is None:
+            inscricao.definir_campo(
+                "empresa_exportadora",
+                "exporta" in perfil_normalizado or "exportadora" in perfil_normalizado,
+            )
+
+        if inscricao.obter_campo("exporta_via_trading") is None:
+            inscricao.definir_campo(
+                "exporta_via_trading",
+                any(
+                    token in perfil_normalizado
+                    for token in [
+                        "comercial exportadora",
+                        "trading",
+                        "agentes comerciais",
+                        "agente comercial",
+                    ]
+                ),
+            )
+
+    def _derivar_representacao_trading_regular(self, inscricao: Inscricao) -> None:
+        if inscricao.obter_campo("representacao_trading_regular") is not None:
+            if not self._tem_valor(inscricao.obter_campo("representacao_trading_regular_justificativa")):
+                inscricao.definir_campo(
+                    "representacao_trading_regular_justificativa",
+                    "Condicao de representacao por trading/comercial exportadora informada diretamente na planilha.",
+                )
+            return
+
+        exporta_via_trading = inscricao.obter_campo("exporta_via_trading")
+        declaracao_representacao = inscricao.obter_campo("declaracao_representacao_link")
+
+        if exporta_via_trading is False:
+            inscricao.definir_campo("representacao_trading_regular", True)
+            inscricao.definir_campo(
+                "representacao_trading_regular_justificativa",
+                "A exigencia do Anexo I nao se aplica porque a empresa nao declarou exportar via trading/comercial exportadora/agente.",
+            )
+            return
+
+        if exporta_via_trading is True and self._tem_valor(declaracao_representacao):
+            inscricao.definir_campo("representacao_trading_regular", True)
+            inscricao.definir_campo(
+                "representacao_trading_regular_justificativa",
+                "Empresa declarou exportar via trading/comercial exportadora/agente e informou o link da declaracao do Anexo I.",
+            )
+            return
+
+        if exporta_via_trading is True:
+            inscricao.definir_campo("representacao_trading_regular", False)
+            inscricao.definir_campo(
+                "representacao_trading_regular_justificativa",
+                "Empresa declarou exportar via trading/comercial exportadora/agente, mas nao informou a declaracao exigida no Anexo I.",
+            )
 
     def _derivar_status_financeiro(self, inscricao: Inscricao) -> None:
         config = self.config.get("status_financeiro") or {}
@@ -853,12 +961,20 @@ class VerificacaoAutomaticaService:
         url_normalizada = self._normalizar_url_publica(link_informado)
 
         if not self._tem_valor(link_informado):
-            valor = False if resposta_declarada in (False, None) else None
-            revisao = resposta_declarada not in (False, None)
+            if resposta_declarada is True:
+                valor = True
+                revisao = True
+            else:
+                valor = False if resposta_declarada in (False, None) else None
+                revisao = resposta_declarada not in (False, None)
             justificativa = (
-                "Nao ha link de website internacional para validar a declaracao."
-                if revisao
-                else "Empresa nao informou website internacional."
+                "Empresa declarou possuir website ou rede social em idioma estrangeiro, mas nao informou link; pontuacao sugerida pendente de revisao."
+                if resposta_declarada is True
+                else (
+                    "Nao ha link de website internacional para validar a declaracao."
+                    if revisao
+                    else "Empresa nao informou website internacional."
+                )
             )
             self._registrar_resultado_verificacao(
                 inscricao,
